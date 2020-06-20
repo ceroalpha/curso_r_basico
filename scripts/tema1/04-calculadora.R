@@ -62,7 +62,7 @@ log(32, 2)
 
 log(32, base = 2)
 log(base=2, 32)
-
+#Funcion para calcular el absoluto
 abs(-pi)
 #Funcion para calcular el factorial de un numero
 factorial(5)
@@ -119,6 +119,7 @@ trunc(sqrt(2))
 sqrt(2)^2-2
 print(sqrt(2)^2-2,20)
 
+#Funcion redondeo , la raiz de dos con 4 decimales y la eleva el resultado al cuadrado
 round(sqrt(2), 4)^2
 
 2^50
@@ -275,7 +276,7 @@ sqrt(as.complex(-5))
 #La raíz cuadrada devuelve, de las dos soluciones la de
 #Re(z)>0, para obtener la otra,  hay que multiplicar por -1
 sqrt(3+2i) # z^2 = 3+2i
-exp(3+2i)
+exp? exp(3+2i)
 sin(3+2i)
 cos(3+2i)
 
