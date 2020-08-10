@@ -292,13 +292,17 @@ Arg(-1-2i)
 #Conjugado = Re(z)- Im(z)i
 Conj(z1)
 #Parte Real y Parte Imaginaria de la variable Z1 que tiene un numero complejo
-Re(z1)
+Re(z1)  
 Im(z1)
+
 
 ### z = Mod(z) * (cos(Arg(z))+sin(Arg(z))i)
 complex(modulus = 2, argument = pi/2) -> z2
-z2
+z2  # 0+2i
 #De la variable Z2 por medio de las funciones se extrae la parte modular y argumeto
-Mod(z2)
-Arg(z2)
+Mod(z2) #El valor absoluto del numero complejo  = 2
+Re(z2)  #Parte Real del numeor complejo = 1.224606e-16
+Im(z2)  #parte imaginaria del numero complejo = 2
+Conj(z2)  # = 0-2i
 pi/2
+  
