@@ -96,6 +96,7 @@ sort(vec,decreasing = TRUE)  #Ordena el vector de forma decreciente
 v=c(10,12,21,22,33,44,55,66)
 v[1]
 v[2]
+v[1:4] #Regresa los primeros 4 items  [1] 10 12 21 22
 
 v[-3] #Remueve el item numero 3
 v[v > 40 ] #items que son mkayores a 40
