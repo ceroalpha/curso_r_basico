@@ -274,3 +274,10 @@ polygon(c(20,30,40),c(10,-10,10), col = "gold", density = 3,
 ```
 
 
+
+```{r}
+alumnos
+
+```
+
+
