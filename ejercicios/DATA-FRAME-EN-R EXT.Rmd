@@ -1,0 +1,159 @@
+---
+title: "dataframe R"
+author: "antonio"
+date: "27/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Carga de ficheros local
+
+```{r}
+df = read.table("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/bulls.dat",
+                header = FALSE, 
+                col.names = c("breed", "sale_price", "shoulder",
+                          "fat_free", "percent_ff", "frame_scale",
+                          "back_fat", "sale_height", "sale_weight"),
+                sep = "", dec = ".")
+head(df)
+```
+
+
+<!-- # Carga desde URL -->
+
+<!-- ```{r} -->
+<!-- df2 = read.table("https://maitra.public.iastate.edu/stat501/datasets/bulls.dat", -->
+<!--                  header = FALSE,  -->
+<!--                 col.names = c("breed", "sale_price", "shoulder", -->
+<!--                           "fat_free", "percent_ff", "frame_scale", -->
+<!--                           "back_fat", "sale_height", "sale_weight"), -->
+<!--                 sep = "", dec = ".") -->
+<!-- head(df2) -->
+<!-- str(df2) -->
+<!-- ``` -->
+
+
+
+# Guardamos dataframe como un CSV 
+```{r}
+df=Orange
+head(df)
+tail(df)
+
+write.table(df,"C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/ejercicios/out_orange.csv",dec=".")
+
+df2=read.table("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/ejercicios/out_orange.csv",sep = "" ,header = TRUE, dec=".")
+
+head(df2)
+
+```
+          
+
+# Creamos un dataframe
+
+```{r}
+persona=c("juan","maria","sandra","pamela","andre")
+edad=c(20,21,21,22,20)
+genero=c("M","F","F","F","M")
+
+alumnos= data.frame(nombre=persona,edad=edad,genero=genero, stringsAsFactors = TRUE)
+head(alumnos)
+
+
+names(alumnos)=c("name","age","gender")
+row.names(alumnos)=c("P1","P2","P3","P4","P5")
+alumnos
+```
+
+
+# Trabajando con subconjuntos
+```{r}
+gender=c("H","M","M","M","H")
+age=c(22,45,20,30,18)
+family=c(2,3,4,2,5)
+#Creamos el dataframe apartir de una lista bde vectores
+df5=data.frame(genero=gender,edad=age,familia=family,stringAsFactor=TRUE)
+
+#Este es ele ejemplo de un subconjunto , nos quedamos coon las filas donde sexo sea M
+df5[df5$genero=="M", ] ->df_m
+df_m
+str(df_m)   #Estructura del dataframe para verificar el tipo de dato
+
+#Droplevels Elimina los niveles(cuando el dato es un factor) de un dataframe
+df_m=droplevels(df_m)
+str(df_m)
+
+```
+
+
+<!-- ESTE ES UN EJEMPLO DE SUBSET CON TYDIVERSE -->
+
+# Tidyverse
+```{r}
+library(tidyverse)
+iris_petal = select(iris, starts_with("Petal"))
+head(iris_petal)
+iris_length = select(iris, ends_with("Length"))
+head(iris_length)
+```
+
+<!-- ESTE ES UN EJEMPLO DE SUBSET CON LA FUNCION SUBSET -->
+
+# Subset
+```{r}
+# subset(<DF>,<condicion logica>, "Select= c(<lista de columnas>) ")
+subset(iris, Species == "setosa", select = c(1,3)) -> setosa
+head(setosa, 5)
+setosa
+str(setosa)
+
+subset(iris, Species == "versicolor", select = c(1,3)) -> versicolor
+rownames(versicolor) = 1:nrow(versicolor)   #Renombramos los nombres de las filas
+head(versicolor, 5)    #Mostramos los primeros 5 elementos del frame
+versicolor
+str(versicolor)   #vista de la estructura del los datos
+
+```
+
+
+
+#trabajando con funciones 
+```{r}
+str(iris)   # Vista de la structura del DF
+#Por medio de sapply podemos aplicar una funcion promedio a las columnas 1:4
+sapply(subset(iris,select=1:4),mean)
+#Por medio de sapply nos traemos de iris las Columnas de 1:4 y le aplicamos la funcion suma
+sapply(iris[,1:4],sum) 
+fun = function(x){sqrt(sum(x^2))}
+#Aplicamos una funcion definida a iris por medio de sapply
+sapply(iris[,1:4],fun)
+
+```
+#Ejemplo trabajando con valores NA
+```{r}
+df=data.frame(c1=c(1,2,3,NA),c2=c(1,2,3,NA))
+df
+#La salida para c1 y c2 son NA , esto por que no permite valores nulos, para poder solucuionar
+#el problema de los valores nulos podemos hacer uso de la opcion na.rm=TRUE
+sapply(df,mean)
+sapply(df,mean,na.rm=TRUE)
+
+
+```
+
+# Ejemplo de agrupados con agregate 
+```{r}
+head(mtcars)
+str(mtcars)
+#mtcars$cly  = as.factor(mtcars$cly)
+#mtcars$gear = as.factor(mtcars$gear)
+#mtcars$carb = as.factor(mtcars$carb)
+str(mtcars)
+  
+
+```
+

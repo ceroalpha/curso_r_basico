@@ -1,0 +1,113 @@
+---
+title: "Notas_Tema_8_D_Cuantitativos"
+author: "antonio"
+date: "12/1/2021"
+output: html_document
+---
+
+#Ejemplo 1 Edades
+```{r}
+#Se han pedido las edades a 20 clientes de un museo. Las respuestas obtenidas han sido las siguientes:
+edad = c(15,18,25,40,30,29,56,40,13,27,42,23,11,26,25,32,30,40,33,29)
+
+
+#Tabla de frecuencia absoluta de las Edades observadas
+#1. En los datos cuantitativos solo se estudian las frecuencias observadas a diferencia de los ordinales
+table(edad)
+
+#Tabla de frecuencia relativa de las Edades observadas
+round(prop.table(edad),2)
+
+#Tabla de frecuencia Absoluta Acumulada de las Edades observadas
+cumsum(table(edad))
+
+#Tabla de frecuencia relativa Acumulada de las Edades observadas
+round(cumsum(prop.table(table(edad))),3)  #NOTA No lleva el MARGIN por que es una tabla de 1 columna
+
+```
+
+#Ejemplo 2 Dados
+
+```{r}
+
+set.seed(162017) #Definimos la semilla de datos
+dados = sample(1:6,25,replace = TRUE) #Definimos un vector de num. aleatori entre 1-6, y que pueden repetirse
+dados  #Imprimimos los datos 
+
+set.seed(NULL)  #Reiniciamos la semilla (regresamos aleatoriedad de los datos a R)
+
+table(dados)  #Frec. Absoluta
+cumsum(table(dados)) #Frec. Absoluta acumulada
+prop.table(table(dados))  #Frec. Relativa 
+round(cumsum(prop.table(table(dados))),3)  #Frec. Relativa Acumulada
+
+#Para poder visualizar los datos en una sola trabla lo convertimos en DATAFRAME
+
+datos=data.frame(puntuacion =1:6,
+                  frec.abs=as.vector( table(dados)),
+                  frec.rel=as.vector( prop.table(table(dados)) ),
+                  frec.abs.acum=as.vector( cumsum(table(dados)) ),
+                  frec.rel.acum=as.vector( cumsum(prop.table(table(dados))) )
+                 )
+datos
+```
+
+Ejemplo 3 Medidas de Tendencia Central
+
+```{r}
+sort(edad) #Ordenamos los datos por su orden natural
+table(edad) #Mostramos los datos ordenados
+
+mean(edad) #Media
+median(edad) #Mediana
+as.numeric( names( which(table(edad)== max(table(edad))) )) #moda
+```
+
+
+
+
+
+#Ejemplo 4 medidas de posicion
+```{r}
+set.seed(260798) #Definimos la semilla de datos
+dado= sample(1:4,50, replace =TRUE) #Definimos un vector de num. aleatorios entre 1-6, y que pueden repetirse
+set.seed(NULL)   #Reiniciamos la semilla (regresamos aleatoriedad de los datos a R)
+
+dado=sort(dado) #Ordenamos el vector de datos 
+length(dado)  #Tamaño del vector
+
+
+#Tabla de fecuencias
+
+df_dados= data.frame(posicion = 1:4, 
+          Fr_Abs= as.vector( table(dado) ),
+          Fr_Rel= as.vector( prop.table(table(dado)) ),
+          Fr_AbsACum= as.vector( cumsum(table(dado)) ),
+          FR_RelAcu= as.vector( round( cumsum(prop.table(table(dado))), 2) )
+)
+print(df_dados)
+
+# Si nos piden el cuantil Q0.3, sabemos que este es el primer elemento de la lista cuya frecuencia relativa acumulada es mayor o igual a 0.3. Este se corresponde con la puntuación 1.
+#R=   Q3=0.32 - puntuacion 1, el , Q7=7.2 Puntuacion 3
+
+# También podríamos hallarlo de otro modo: fijándonos en la lista ordenada de puntuaciones, el cuantil Q0.3 sería el primer elemento de dicha lista tal que fuera mayor o igual que, como mínimo, el 30% de los datos. Si calculamos el 30% de 50, obtenemos que es 15. Esto lo que nos dice es que el cuantil que buscamos es el número que se encuentrae en la quinceava posición de la lista ordenada.
+
+#Dado en pos 15 es el cuantil 15
+dados[15]
+```
+
+#Ejemplo 5 dados 2
+
+```{r}
+set.seed(0)
+dados2 = sample(1:6,15, replace = TRUE)
+dados2=sort(dados2)
+print(dados2)
+#  [1] 1 1 1 2 2 2 3 3 3 4 5 5 5 6 6
+set.seed(NULL)
+quantile(dados2,0.25) #Primer cuartil,Valor que fuera mayor o igual al Q.25(posicion 4 valor 2)
+
+quantile(dados2,0.8) #Cuantil 8,Valor que fuera mayor o igual al Q.8(pposicion 13 valor 5)
+
+```
+

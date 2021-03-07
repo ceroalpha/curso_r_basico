@@ -1,0 +1,103 @@
+---
+title: "Notas_Tema_6_EjemploFinal"
+author: "antonio"
+date: "28/10/2020"
+output: html_document
+---
+
+#Juntar Color y Pelo sin distinguir por sexo
+
+```{r}
+ftable(HairEyeColor)
+#Nos quedmaos con los datos donde: Todo los colores de pelo, todos los colores de ojo de Male
+male <- HairEyeColor[, ,"Male"]
+print(male)
+#Nos quedmaos con los datos donde: Todo los coles de pelo, todos los colores de ojo de Famele
+female <- HairEyeColor[, ,"Female"]
+#Hacemos un data con la funcio as.table()
+data <- as.table(male+female)
+print(data)
+
+```
+
+
+#Renombramos los datos al español, tanto del pelo como los ojos
+```{r}
+dimnames(data)=list(
+  Pelo=c("Negro", "Marron", "Pelirrojo","Rubio"),
+  Ojos=c("Marrones","Azules","Pardos","Verdes")
+)
+data
+```
+
+## Pintamos un Grafico de mosaicos para el df
+
+```{r}
+plot(data,col=c("lightblue"),main="Grafico de Mosaico")
+```
+
+## Contamos el Numero total de datos
+
+```{r}
+
+sum(data)
+```
+
+
+## Tablas de Frecuencias Relativas y absolutas por variable
+
+```{r}
+colSums(data) #Frec. Abosluta
+rowSums(data) #Frec. Absoluta
+colSums(prop.table(data)) #Frec. Relativa
+rowSums(prop.table(data)) #Frec. Relativa
+```
+
+
+## Diagramas de barras, frecuencias relativas del color de Ojos/Cabello
+
+```{r}
+
+#La funcion par(mfrow= c(1,2)) , Permite dibujar dos subplot en un sola figura tipo grafico
+
+barplot( colSums(prop.table(data)),  ylim=c(0, 0.5),
+        main= "Frecuencia relativa para el color de ojos",
+        col =c("burlywood4","lightblue","orange3","lightgreen"))
+
+barplot( rowSums(prop.table(data)),  ylim=c(0, 0.5),
+        main= "Frecuencia relativa para el color de Cabello",
+        col =c("black","burlywood4","red","yellow"))
+```
+
+
+## Frecuencia Relativas Globales/Frecuencias Relativas Marginales
+
+```{r}
+library(gmodels)
+#Frecuencia Relativa global
+prop.table(data) 
+
+#Frecuencia Relativa Marginal
+round(prop.table(data,margin = 1), 3) #Marginal por Filas
+round(prop.table(data,margin = 2), 3) #Marginal por Columnas
+
+
+```
+
+
+
+## Diagramas de barras, frecuencias relativas MARGINALES
+
+```{r}
+
+barplot(prop.table(data,margin = 1),  ylim=c(0, 0.9),beside  =TRUE,
+        main= "Frecuencia relativa de color de \n cabello por cada color de ojos",
+        col =c("black","burlywood4","red","yellow"))
+
+barplot(t(prop.table(data,margin = 2)),  ylim=c(0, 0.6),beside  =TRUE,
+        main= "Frecuencia relativa de color de \n color de ojos por cada cabello",
+        col =c("burlywood4","lightblue","orange3","lightgreen"))
+```
+
+
+

@@ -1,0 +1,89 @@
+---
+title: "Notas_Tema_6_Graficos"
+author: "antonio"
+date: "26/10/2020"
+output: html_document
+---
+
+# Ejercicio practico Frecuencia bidimensional
+```{r}
+animales=c(rep("gato",2),rep("perro",3),rep("gato",2),rep("perro",3) )
+genero=sample(c("macho","hembra"),size=length(animales), replace=T)
+#Tabla de Fecuencia bidimensional
+table(animales,genero)
+```
+
+# Ejemplo de GRAFICO FREC. ABSOLUTA
+
+```{r}
+barplot(table(animales),col=c("green","blue"), main="Diagrama de barras Frecuencia absoluta
+con una variable de \n Datos animales" )
+```
+
+# Ejemplo de GRAFICO FREC. RELATIVA
+
+```{r}
+barplot(prop.table(table(genero)),col=c("green","blue"), main="Diagrama de barras Frecuencia relativa como proporciones entre 0-1" )
+```
+
+
+# Ejemplo de GRAFICO con dos figuras
+
+```{r}
+#La funcion par(mfrow= c(1,2)) , Permite dibujar dos subplot en un sola figura tipo grafico
+par(mfrow=c(1,2))
+barplot(table(animales), col=c("yellow"))
+barplot(table(animales), col=c("yellow","orange"))
+```
+
+
+# Ejemplo de GRAFICO con bara Horizontales
+
+```{r}
+#El parametro -horz=TRUE, Permite que las barras se dibujen de forma horizontal
+barplot(table(animales), horiz=TRUE)
+```
+
+
+# Ejemplo de GRAFICO con barras apiladas
+
+```{r}
+#Podemos dibujar graficos de Tablas Bidimensional (Diagrama de barras apiladas)
+#Dibujando la barra de la segunda variable cortando sobre la primera frecuencia 
+barplot(table(animales,genero), legend.text = TRUE)
+barplot(table(animales,genero), beside=TRUE, legend.text=TRUE)
+
+```
+
+
+```{r}
+barplot(table(genero,animales), beside=TRUE, names=c("MACHOS", "HEMBRAS"), 
+        col=c("yellow","lightblue"), legend.text=c("No","Yes"))
+```
+
+
+# Diagrama Circular
+
+```{r}
+x=c(4 ,2, 3, 5, 1, 4, 3, 1, 5, 2, 3, 2)
+print(x)
+#La funcion pie(<datos>) , permite grafiar los datos e forma de grafico de pastel
+pie(table(x), main="Ejemplo de Diagrama Circular")
+pie(table(animales) , main= "Distribucion de animales")
+```
+
+
+#Diagrama de Mosaico
+```{r}
+plot(table(genero,animales), main="Gráfico de mosaico de las variables
+     \"Sexo\" y \"Respuestas\"")
+
+plot(HairEyeColor, main="Gráfico de mosaico de la tabla HairEyeColor", 
+     col=c("pink","lightblue"))
+
+#Genera el grafico de mosaico en 2 figuras segmentado por SEX
+# vcd::cotabplot(HairEyeColor)
+```
+
+
+

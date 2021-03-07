@@ -1,0 +1,88 @@
+---
+title: "Notas_Tema_9_Agrupar_Datos_III"
+author: "antonio"
+date: "29/1/2021"
+output: html_document
+---
+
+```{r}
+#Conjunto de dato
+notas= c(7,10,2,2,6,2,5,4,9,2,7,5,1,7,0,3,10,2,10,4,1,4,5,4,0,
+5,10,4,3,0,7,5,10,3,4,8,1,9,3,7,9,1,9,10,5,10,10,9,5,0,
+3,1,3,2,0,6,6,4,7,4,7,3,9,0,7,0,3,0,3,3,1,4,10,9,1,
+4,0,6,10,0,10,1,0,2,6,4,8,2,3,7,7,3,3,8,2,6,6,2,8,9)
+notas
+
+#Definimos los extremos de intervalos de las notas 
+L=c(0,5,7,9,10)
+
+#Definimos notas1 como el resultado de la codificación en intervalos, y como etiquetas de los propios intervalos
+# include.lowest = TRUE : eL ultimo Intervalo es cerrado por la derecha
+notas1 = cut(notas, breaks = L, right = FALSE, include.lowest = TRUE)
+notas1
+
+#Defibnimos las marcas de clase (punton medio de los intervalos)
+MC = (L [1:length(L)-1] + L[2:length(L)])/2
+
+#Definimos notas2 como el resultado de la codificación en intervalos utilizando como etiquetas las "MARCA DE CLASE" 
+notas2 = cut(notas, breaks = L, labels = MC, right = FALSE, include.lowest = TRUE)
+notas2
+
+
+#Definimos notas3 como el resultado de la codificación en intervalos utilizando como 
+#etiquetas la posición ordenada del intervalo (1, 2, 3 o 4)  DONDE labels= FALSE: obtenermos un vector de datos
+notas3 = cut(notas, breaks = L, labels = FALSE, right = FALSE, include.lowest = TRUE)
+notas3
+
+L=c(0,2.5,5,7.5,10)
+
+#Definimos notas4 como el resultado de la codificación en intervalos utilizando etiquetas Susp, Aprob, Not y Exc
+notas4 = cut(notas, breaks = L, labels = c("Susp", "Aprob", "Not", "Exc"), right = FALSE, include.lowest = TRUE)
+notas4
+
+
+```
+
+#Frecuencias de la notas 
+```{r}
+
+table(notas4) #Fr. Abs
+prop.table(table(notas4)) #Fr. Rel
+cumsum(table(notas4)) #Fr. Abs. Cum
+cumsum(prop.table(table(notas4))) #Fr. Rel. Cum
+```
+
+#Podríamos haber obtenido todo lo anterior haciendo uso de la función hist
+```{r}
+notasHist = hist(notas, breaks = L, right = FALSE, include.lowest = TRUE, plot = FALSE)
+FAbs = notasHist$count
+FRel = prop.table(FAbs)
+FAbsCum = cumsum(FAbs)
+FRelCum = cumsum(FRel)
+```
+
+
+#Ahora ya podemos crear un data frame con todas estas frecuencias:
+```{r}
+intervalos = c("[0,5)","[5,7)","[7,9)","[9,10]") #intervalos de notas
+calificacion = c("Suspenso", "Aprobado", "Notable", "Excelente")  
+marcas = notasHist$mids  #marcas de clase, el parametro "$mids" , me regresa el punto medio 
+tabla.Fr = data.frame(intervalos,calificacion,marcas,FAbs,FAbsCum,FRel,FRelCum) #construimos el dataframe
+tabla.Fr
+
+#TablaFrecs.L(notas, L, TRUE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

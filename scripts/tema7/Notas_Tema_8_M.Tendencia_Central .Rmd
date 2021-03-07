@@ -1,0 +1,67 @@
+---
+title: "Notas_Tema_8_Medias"
+author: "antonio"
+date: "13/1/2021"
+output: html_document
+---
+
+
+# Medias
+
+```{r}
+x = c(32, 45, 67, 43, 28, 17, 48, 95)
+n = length(x)
+```
+
+Vamos a calcular las medias del vector `r x` que está formado por `r n` observaciones.
+
+## Media aritmética
+
+$$\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$$.
+
+```{r}
+sum(x)/n # mean
+```
+
+
+## Media aritmética ponderada
+
+$$\bar{x}_w = \frac{\sum_{i=1}^nw_i\cdot x_i}{\sum_{i=1}^n w_i}$$
+
+```{r}
+#Defenimos un vector con sus pesos para el ejercicio de una media ponderada
+#Es pondarada porque se da un valor a los datos dependiendo de su relevancia en el estudio
+w = c(1, 2, 2, 3, 3, 2, 2, 1)
+w2 = c(1, 1, 1, 1, 1, 1, 1, 1) #Pesos con valor 1
+sum(w*x)/sum(w) 
+sum(w2*x)/sum(w2)
+```
+
+
+## Media geométrica
+
+$$\bar{x}_G = \left(\prod_{i=1}^n x_i\right)^{1/n}$$
+
+```{r}
+
+prod(x)^(1/n)
+#Otra forma de mostrarlo, podemos calcular la Raiz enecima de cada uno de los prooductos 
+#(POr que la raiz de un producto es el producto de raices)
+prod(x^(1/n))
+```
+
+## Media armónica
+
+$$\bar{x}_A = \frac{n}{\sum_{i=1}^{n}\frac{1}{x_i}}$$
+
+```{r}
+n/sum(1/x)
+```
+
+## Mínimo y máximo
+
+```{r}
+min(x)
+max(x)
+```
+

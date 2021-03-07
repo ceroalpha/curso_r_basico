@@ -1,0 +1,115 @@
+---
+title: "Notas_Tema_8_M.Dispersion"
+author: "antonio"
+date: "14/1/2021"
+output: html_document
+---
+```{r}
+alumno_A= c(5,5,8,10,10,10,9,10,9,8)
+alumno_B= c(8,8,8,10,10,8,9,8,7,8)
+alumno_A=sort(alumno_A)
+alumno_B=sort(alumno_B)
+
+#Promedio de los datos
+mean(alumno_A)
+mean(alumno_B)
+
+```
+## Calculamos el RANGO
+```{r}
+range(alumno_A)
+range(alumno_B)
+
+```
+## Calculamos la dif. entre el MAX y MIN
+```{r}
+diff(range(alumno_A))
+diff(range(alumno_B))
+
+```
+## Calculamos El Rango Intercuartilico
+```{r}
+IQR(alumno_A)
+IQR(alumno_B)
+
+```
+## Calculamos la Varianza Muestral
+```{r}
+var(alumno_A)
+var(alumno_B)
+
+```
+## Calculamos la Desviacion estandar Muestral
+```{r}
+sd(alumno_A)
+sd(alumno_B)
+
+```
+
+## Calculamos la Varianza Poblacional
+```{r}
+var(alumno_A)*(length(alumno_A)-1)/(length(alumno_A))
+var(alumno_B)*(length(alumno_B)-1)/(length(alumno_B))
+
+```
+## Calculamos la Desviacion estandar Poblacional
+```{r}
+sd(alumno_A)*sqrt((length(alumno_A)-1 )/length(alumno_A))
+sd(alumno_B)*sqrt((length(alumno_B)-1 )/length(alumno_B))
+
+```
+
+
+## Datos Cuantitativos por Factor
+# *Funcion summary()*
+```{r}
+#Importamos el data frame datacrab y arreglemos los datos.
+cangrejo= read.table("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/datacrab.txt",header = TRUE);
+cangrejo=cangrejo[,-1] # Omitimos la primera columna de dataframe (se elimmina el ID)
+head(cangrejo)
+summary(cangrejo) #Aplicamos la función summary
+
+#Si nos interesase comparar numéricamente los pesos y las anchuras de los cangrejos con 3 colores con los que tienen 5 colores, utilizaríamos las siguientes instrucciones:
+
+summary(subset(cangrejo, color == 3,c("weight","width")))
+summary(subset(cangrejo, color == 5,c("weight","width")))
+# Y deducimos así que los cangrejos con 5 colores pesan ligeramente menos y tienen menos anchura que los que tienen 3 colores.
+```
+## *Funcion by()* 
+```{r}
+#interesa calcular de forma rápida y sencilla las longitudes de sépalos y petalos en función de la especie, necesitaríamos hacer uso de la instrucción mostrada a continuación.
+#by(<data_set[,c(<columnas>)]>, <factor>, FUN = <summary>)
+
+by(iris[,c(1,3)], iris$Species, FUN = summary)
+```
+## *funcion aggregate*
+```{r}
+aggregate(cbind(Sepal.Length,Petal.Length)~Species, data=iris, FUN=summary)
+```
+
+## NA
+```{r}
+#Donde na.rm= TRUE,  permite trabajar con las funciones aunque existan valores NA(NULL)
+alumno_c= c(5,5,8,10,10,7,9,10,9,6,NA)
+sum(alumno_c) 
+sum(alumno_c, na.rm = TRUE) 
+mean(alumno_c)
+mean(alumno_c,na.rm = TRUE)
+var(alumno_c)
+var(alumno_c,na.rm = TRUE)
+sd(alumno_c)
+sd(alumno_c,na.rm = TRUE)
+```
+
+
+## Diagrama de Caja y Bigote
+```{r}
+#No se recomienta tanto hacer el boxplot, y hacerlo son previo analisis de la informacion
+print(alumno_A)
+boxplot(alumno_A, main="Diagrama de Caja") #Con una sola caja
+print(alumno_B)
+boxplot(alumno_A,alumno_B, main="Diagrama de Caja") #Copn 3 vectores 
+
+```
+
+

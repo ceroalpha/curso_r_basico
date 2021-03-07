@@ -1,0 +1,139 @@
+---
+title: "Notas_Tema_7_D_Ordinales"
+author: "antonio"
+date: "10/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejemplo de Notas de alumnos
+
+```{r}
+#Creamos un array de datos
+notas = ordered(c("S","A", "N", "Ex", "S", "S", "Ex", "Ex", "N", "A", "A", "A",
+                  "A", "N", "S"), levels = c("S", "A", "N", "Ex"))
+
+#::Frecuencia Absolula
+Fre_Abs=table(notas)
+print(Fre_Abs)
+#::Frecuencia Absoluta acumulada
+cumsum(Fre_Abs)
+#::Frecuencia Relativa Acumulada 
+cumsum(prop.table(Fre_Abs))
+# Otra forma
+cumsum(Fre_Abs/length(notas))
+#::Frecuencia Relativa
+prop.table(Fre_Abs)
+
+#GRAFICAMOS LAS FRECUENCIAS ABOSULUTAS
+barplot(Fre_Abs,main="Diagrama de barras de Fre. Absoluta")
+
+
+#GRAFICAMOS LAS FRECUENCIAS ABOSULUTAS ACUMULADAS
+barplot(cumsum(Fre_Abs),main="Diagrama de barras de Fre. Relativas Acumnuladas")
+
+```
+
+# Ejemplo de jirafas
+```{r}
+
+#Construimos el vector de  los datos
+longitud =ordered(c(
+"Corto",     "Normal",    "Muy.corto", "Muy.corto", "Normal",    "Corto",     "Largo",    
+"Muy.corto", "Muy.largo",  "Normal",    "Corto",     "Largo",     "Muy.largo", "Largo",    
+"Muy.largo", "Largo",     "Corto",     "Normal",    "Largo",     "Muy.largo", "Corto",    
+"Normal",    "Muy.corto", "Muy.corto", "Largo",     "Normal",    "Corto",     "Muy.largo",
+"Normal",    "Muy.corto", "Muy.corto", "Muy.largo", "Muy.corto", "Normal",    "Normal",   
+"Largo",     "Muy.corto", "Muy.corto", "Normal",    "Muy.corto", "Muy.largo", "Largo",    
+"Normal",    "Normal",    "Largo",     "Muy.corto", "Muy.largo", "Muy.corto", "Muy.corto",
+"Largo",     "Normal",    "Corto",     "Muy.corto", "Largo",     "Largo",     "Muy.largo",
+"Corto",     "Largo",     "Corto",     "Normal",    "Normal",    "Corto",     "Muy.largo",
+"Muy.corto", "Corto",     "Muy.corto", "Largo",     "Largo",     "Muy.corto", "Normal",   
+"Corto",     "Corto",     "Muy.largo", "Muy.corto", "Muy.corto", "Normal",    "Largo",    
+"Corto",     "Normal",    "Muy.corto", "Corto",     "Largo",     "Muy.corto", "Corto",    
+"Muy.corto", "Muy.largo", "Muy.largo", "Muy.corto", "Normal",    "Corto",     "Muy.largo",
+"Muy.corto", "Corto",     "Muy.largo", "Corto",     "Largo",     "Corto",     "Corto",   
+"Muy.largo", "Muy.largo"), levels= c("Muy.corto", "Corto","Normal","Largo","Muy.largo" ))
+
+print(longitud)
+
+#Creamos una variable que contine el num. de jirafas por Zona 
+zonas=  rep(c("A","B", "C","D"),c(30,25,35,10))
+
+#creamos el Dataframe (bidimensional)
+jirafa=data.frame(zonas,longitud)
+head(jirafa)
+str(jirafa)
+#write.csv(jirafa,file="C:/Users/anton/Downloads/jirafa.csv")
+
+#Tabla de frecuencias Relativas global
+prop.table(table(jirafa))
+
+#Tabla de frecuencias absolutas Acumulada de las Zonas (es bidimensional por que tiene 2 columnas)
+apply(table(jirafa), MARGIN=1, FUN=cumsum)
+t(apply(table(jirafa), MARGIN=1, FUN=cumsum))
+
+
+#Tabla de frecuencias Relativas
+prop.table(table(jirafa),margin = 1)
+
+
+#Tabla de frecuencias Relativas Acumulada
+t(apply(prop.table(table(jirafa),margin=1),MARGIN=1,FUN=cumsum))
+
+# Graficamos las Frecuencias acumuladas 
+
+barplot(apply(prop.table(table(jirafa),margin=1),MARGIN=1,FUN=cumsum),
+         main = "Diagrama de barras de\n frecuencias relativas acumuladas de longitudes por zonas",legend=TRUE,
+         args.legend=list(x="topleft", cex=0.55) , beside=TRUE)
+
+```
+
+# Ejemplo de Cangrejos
+
+```{r}
+#Importamos el data frame datacrab y arreglemos los datos.
+cangrejo= read.table("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/datacrab.txt",header = TRUE);
+cangrejo=cangrejo[,-1] # Omitimos la primera columna de dataframe (se elimmina el ID)
+head(cangrejo)
+str(cangrejo)
+
+#La variable numérica width contiene la anchura de cada cangrejo
+table(cangrejo$width)
+#Convertimos la variable numerica en una variable ordinal que agrupara las medidas de los cangrejos
+
+intervalos =cut(cangrejo$width, breaks=c(21,25,29,33,Inf), right = FALSE,
+                labels=c("21-25","25-29","29-33","33-..."))
+
+#Del intervalo de datos que obtenermos , ahora le asignamos un orden
+cangrejo$width.rank=ordered(intervalos)
+str(cangrejo) #Visualisamo la nueva variable en el dataframe
+
+# Nos interesa estudiar la distribución de las anchuras de los cangrejos según el número de colores. Por lo tanto, vamos a calcular las tablas bidimensionales de frecuencais relativas y relativas acumuladas de los intervalos de las anchuras en cada nivel de color y las representaremos por medio de diagramas de barras.
+
+Tabla = table(cangrejo[,c(1,6)])  #Nos quedmos con las columas de la 1 - 5
+Tabla
+
+#Frecuencia relativa marginal por filas 
+Frec_rel = round(prop.table(Tabla,margin = 1),3)
+Frec_rel
+
+#Frecuencia relativa Acomulada por filas
+Frec_rel_acum = round(apply( prop.table(Tabla,margin = 1), MARGIN=1, FUN= cumsum), 3)
+t(Frec_rel_acum)
+
+#Graficas de frecuencia relativas por fila
+colores= c("cyan4", "cyan3", "cyan2", "cyan1")
+barplot(t(prop.table(Tabla,margin=1)), main="Diagrama de barras de\n frecuencia relativas",col = colores,beside=TRUE,legend = TRUE,
+        ylim = c(0,1), args.legend=list(x="topright", cex=0.60) )
+
+#Graficas de frecuencias relativas a cumuladas por fila
+
+barplot(apply(prop.table(Tabla,margin=1),MARGIN=1,FUN=cumsum), main="Diagrama de barras de\n frecuencias relativas acumuladas",
+        col = colores,beside=TRUE,legend = TRUE,
+        args.legend=list(x="topleft", cex=0.55) )
+```
+

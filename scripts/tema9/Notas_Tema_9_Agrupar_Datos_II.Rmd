@@ -1,0 +1,233 @@
+---
+title: "Notas_Tema_9_Agrupar_Datos_II"
+author: "antonio"
+date: "25/1/2021"
+output: html_document
+---
+
+#La funcion cut 
+```{r}
+irisdf = iris
+```
+
+
+```{r}
+petals = iris$Petal.Length
+petals=iris$Petal.Length
+
+#right = FALSE Cerrados por la Izquierda y abiertos por la Derecha
+cut(petals, breaks=5, rigth=FALSE)# 5 intervalos en el dataframe
+
+#calculamos los intervalos ahora ocn la regla de la raiz cuadrada R=13 niveles de factor
+cut(petals, breaks = ceiling(sqrt(length(petals))), right = FALSE) 
+
+#breaks= definismos los intervalos como cerrados con la lista de niveles 1:5
+cut(petals, breaks = c(1,2,3,4,5,6,7), right = FALSE)
+
+#labels = FALSE , colocar las etiquetas con un intervalo de numero natural segun los niveles 
+cut(petals, breaks = 5, right = FALSE, labels = FALSE)
+
+#labels = c( , , ) , con una lista de etiquetas se puede dividir la notacion de los intervalos
+irisdf$div5 = cut(petals, breaks = 5, right = FALSE, labels = c("Peq", "Norm", "Gran", "XGran", "Gigan"))
+
+
+#Tenemos la opcion de añadir el intervalo como variable al dataframe y visualizar los intervalos como dato
+irisdf$div5 = cut(petals, breaks = 5, right = FALSE, 
+    labels = c("Peq", "Norm", "Gran", "XGran", "Gigan"))
+irisdf
+
+```
+
+
+#Ejemplo. Funciones Tabla de Frecuencia Datos Agrupados (cuantitativos)
+
+```{r}
+#Primera función
+TablaFrecs = function(x,k,A,p){ 
+  L = min(x)-p/2+A*(0:k) #Extremo de los intervalos
+  x_cut = cut(x, breaks = L, right=FALSE) #Dividir los datos x en intervalos, right=FALSE(sin cerrar por la derecha)
+  intervals = levels(x_cut) #Obtenermos los Dif. intervalos como los niveles de la variable x_cut
+  mc = (L[1]+L[2])/2+A*(0:(k-1))  #Puntomedio de los intervalos
+  Fr.abs = as.vector(table(x_cut)) #Frec Abs
+  Fr.rel = round(Fr.abs/length(x),4) #Frec Rel
+  Fr.cum.abs = cumsum(Fr.abs)  #Frec Abs Acum
+  Fr.cum.rel = cumsum(Fr.rel)  #Frec Rel Acum
+  tabla = data.frame(intervals, mc, Fr.abs, Fr.cum.abs, Fr.rel, Fr.cum.rel)#Todos los datos se pasan a un dataframe
+  tabla
+  }
+
+```
+
+
+```{r}
+# Es una variante de la anterio, la diferencia es que ya partimos de "L" - Con los Extremos de los intervalos
+
+TablaFrecs.L = function(x,L,V){
+  x_cut = cut(x, breaks=L, right=FALSE, include.lowest=V)
+  intervals = levels(x_cut)
+  mc = (L[1:(length(L)-1)]+L[2:length(L)])/2
+  Fr.abs = as.vector(table(x_cut)) 
+  Fr.rel = round(Fr.abs/length(x),4)
+  Fr.cum.abs = cumsum(Fr.abs)
+  Fr.cum.rel = cumsum(Fr.rel)
+  tabla = data.frame(intervals, mc, Fr.abs, Fr.cum.abs, Fr.rel, Fr.cum.rel)
+  tabla
+  }
+```
+
+La tabla de frecuencia de la longitud de los petalos de iris es: 
+
+```{r}
+#Tabla de frec primera funcion
+TablaFrecs(petals,k=6,A=1, p=0.1)
+
+#Tabla de frec segunda funcion
+TablaFrecs.L(petals,L=6,V=FALSE)
+
+#Tabla de frec segunda funcion - Con intervalos definidos manualemente
+TablaFrecs.L(petals,L=c(1,3,4,5,5.5,6,6.5,7),V=FALSE)
+```
+
+
+
+#1.Funcion para calcular histogramas de frecuencias absolutas más completos:
+
+```{r}
+histAbs = function(x,L) {
+  h = hist(x, breaks = L, right = FALSE, freq = FALSE,
+           xaxt = "n", yaxt = "n", col = "lightgray", 
+           main = "Histograma de frecuencias absolutas", 
+           xlab = "Intervalos y marcas de clase",ylab = "Frecuencias absolutas")
+  axis(1, at=L)
+  text(h$mids, h$density/2, labels=h$counts, col="purple") 
+  }
+
+#Donde: 
+#x=  vector_datos , L =Extremos de los intervalos
+#right = FALSE: Intervalos sin cerrar por la derecha
+#freq = FALSE: Frecuencias Relativas, Pero como se elimino Xlab se grafico representando como Absolutas 
+#xlab/ ylab : etiquetas en los ejes
+#xaxt="n" / yaxt="n": por ahora con ="n", la función no dibuja los ejes abcisas y ordenadas 
+
+#axis(1, at=L) :agrega valores a los ejes de las ordenadas y abcisas ,donde :
+  # axis(<i>, =  Si i=1 Dibuja el eje de las ordenadas, si i=2 Dibuja el eje de las ordenadas
+  # at=  vector de los intervalos de clase
+
+#text(): Funcion de R que permite agregar un texto sobre el objeto figura
+#text(h$mids, h$density/2, labels=h$counts, col="purple"): 
+#Donde:
+#h$mids, Se pósiciona el punterto en medio de la barra (marcas de clase), 
+#h$density/2, EL puntero baja a una altura media segunb la densidad de datos
+#labels=h$counts: Pinta como etiqueta el valor de N. Elementos (Frecuencia) de datos dentro de la barra
+
+```
+
+
+#1.Funcion para calcular histogramas de frecuencias absolutas más completos:
+```{r}
+histAbsCum = function(x,L) {
+  h = hist(x, breaks = L, right = FALSE , plot = FALSE) #1. 
+  h$density = cumsum(h$density)  #2. Sumas acumuladas
+  plot(h, freq = FALSE, xaxt = "n", yaxt = "n", col = "lightgray",  #3.  Dibijamos el hist con titulos
+       main = "Histograma de frecuencias\nabsolutas acumuladas", xlab = "Intervalos", 
+       ylab = "Frec. absolutas acumuladas")
+  axis(1, at=L) #4. Ejes de abcisas con las marcas y extremos de intervalos
+  text(h$mids, h$density/2, labels = cumsum(h$counts), col = "purple")#5. Frec abs.,Acumuladas
+}
+#Donde Funcion:
+#x= Dataframe
+#L= Limites de Intervalos 
+
+#Donde "h":
+#x= Parametro que indica el dataframe
+#breaks = L,Sepracion con las divisiones 
+#right = FALSE , Limite sin cerrar por la derecha
+#plot = FALSE , Con el parametro FALSE no se pinta el grafico
+
+#h$density = las densidades son las sumas Frec abs "acumuladas",pero (Relativas) de la dencidades altuta histogramas
+
+#Donde plot()
+# h: Dataframe
+# freq= FALSE: eñliminamos el parametro de las frecuencias 
+#xaxt = "n",yaxt = "n", Se omite colocar los eje "X" y "Y"
+#col = "lightgray", Color de las barras del grafico
+# xlab/ ylab = Colocando una leyenda a los ejes respectivamente
+
+#axis(1, at=L) = Permite colocar en los ejes de las X los extremos de cad ana de las clases 
+#Donde text () 
+#h$mids, Escribir un texto en medio de cada una de las barras las marcas de clase, s
+#(h$mids), a la mitad de la densidad 
+# labels = cumsum(h$counts), Como Etiquetas las sumas acumuladas de las Frec Absolutas
+```
+
+
+#histograma de frecuencias Relativas (Fun. Densidad)
+
+
+```{r}
+
+histRel = function(x,L) {
+  h = hist(x, breaks=L, right=FALSE , plot=FALSE)
+  t = round(1.1*max(max(density(x)[[2]]),h$density),2) 
+  plot(h, freq = FALSE, col = "lightgray", 
+       main = "Histograma de frec. relativas\ny curva de densidad estimada", 
+       xaxt="n", ylim=c(0,t), xlab="Intervalos", ylab="Densidades")
+  axis(1, at = L) 
+  text(h$mids, h$density/2, labels = round(h$counts/length(x),2), col = "blue")
+  lines(density(x), col = "purple", lwd = 2) 
+}
+
+#Donde: 
+# function(x,L) // X= Dataframe,  L= Intervalos definidos
+
+#h= Histograma
+# hist(<DataFrame>, breaks=<Intervalos>, right=<FALSE(Int.Cerrado Der)>, plot=<FALSE(no dibuja el Histograma)>)
+
+#t=par ajustar la densidad por arriba del maximo de la Distrubucion
+#round(1.1*max(max(density(x)[[2]]),h$density),2) //Finalidad, ajustar el eje "Y", no al valor maximo si no por 10+ arriba  para que los datos tegan una mejor representacion al dubujarlos sobre el grafico
+
+#plot(<histograma>, freq= <FALSE(Sin generarla frecuencia)>, col =<"Color de las barras">, 
+      #main = "Titulo histograma", xaxt="n (no pinta las div del eje X)",
+      #ylim=c(0,t) //El eje de las "Y" , va desde 0 hasta T= Donde quivale a un 10% + por exceso de la densidad  
+      #xlab="Intervalos", ylab="Densidades")
+#axis(1, at = L)= Permite colocar los extremos de los intrervalos
+
+#text(h$mids<M da las marcas de clase>, h$density/2 <a la mitad de la barrar se colca el conteo frec Abs>, 
+      #labels = round(h$counts/length(x),2), col = "blue")
+
+#  lines(density(x), col = "purple", lwd = 2)  // Permite pintar una linea de densidad sobre la grafica
+```
+
+
+#Histogramas de frecuencias relativas acumuladas
+#(se aplica para conocer la distribucion de la poblacion )
+
+```{r}
+
+histRelCum = function(x,L){
+  h = hist(x, breaks = L, right = FALSE , plot = FALSE)
+  h$density = cumsum(h$counts)/length(x)
+  plot(h, freq = FALSE, 
+      main = "Histograma de frec. rel. acumuladas\n y curva de distribución estimada", 
+      xaxt = "n", col = "lightgray", xlab = "Intervalos", 
+      ylab = "Frec. relativas acumuladas") 
+  axis(1, at = L)
+  text(h$mids, h$density/2, labels = round(h$density ,2), col = "blue")
+  dens.x = density(x)
+  dens.x$y = cumsum(dens.x$y)*(dens.x$x[2]-dens.x$x[1]) 
+  lines(dens.x,col = "purple",lwd = 2)
+}
+
+#Donde
+#text(h$mids, h$density/2, labels = round(h$density ,2), col = "blue")
+#h$mids= Añado la marca de clase 
+#h$density = cumsum(h$counts)/length(x) = Alrura relativa, Se posiciona sobre la mitad de la barra
+#labels = round(h$density ,2)  Densidad acumulada (Frecuencia)
+
+#dens.x = density(x) //densidad (curva)
+# dens.x$y = cumsum(dens.x$y)*(dens.x$x[2]-dens.x$x[1]) //suma acumulada de las proporciones para que se pinte la den #de distribucion
+#lines(dens.x,col = "purple",lwd = 2) Pinta las lineas de distribucion
+
+```
+
+

@@ -29,7 +29,8 @@ df$Species[1:10]
 ```{r}
 df[1:10, ]
 df[1:10, 2:4]
-df[df$Species == "setosa" & df$Sepal.Width> 4, ]
+a=df[df$Species == "setosa" & df$Sepal.Width> 4, ]
+a
 df[df$Species == "setosa" & df$Sepal.Width> 4, ][c(1,3), c(2,5)]
 ```
 

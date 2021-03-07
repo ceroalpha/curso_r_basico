@@ -1,0 +1,110 @@
+---
+title: "Notas_Tema_9_A_Datos_IV_Alumnos"
+author: "antonio"
+date: "6/2/2021"
+output: html_document
+---
+
+```{r}
+
+#Conjunto de datos
+notas= sort( c(7,10,2,2,6,2,5,4,9,2,7,5,1,7,0,3,10,2,10,4,1,4,5,4,0,
+5,10,4,3,0,7,5,10,3,4,8,1,9,3,7,9,1,9,10,5,10,10,9,5,0,
+3,1,3,2,0,6,6,4,7,4,7,3,9,0,7,0,3,0,3,3,1,4,10,9,1,
+4,0,6,10,0,10,1,0,2,6,4,8,2,3,7,7,3,3,8,2,6,6,2,8,9) )
+notas
+n=length(notas)
+
+#1.CALCULAMOS EL NUMERO DE CLASES 
+K= ceiling(1+log(n,2)) 
+K   
+
+#REGLA 2.CALCULAMOS LA AMPLITUD DE LOS INTERVALOS
+A=diff(range (notas))/K   
+A
+
+#REGLA 3.CALCULAMOS LOS EXTREMOS DE LOS INTERVALOS
+P=0
+L1=min(notas)
+L1
+L=L1 + A*(0:K) 
+L 
+
+#REGLA 4.CALCULAMOS LA MARCA DE CLASE
+X1 = (L[1]+L[2])/2
+X=X1+A*(0:(K-1))
+X
+```
+
+
+```{r}
+
+#Primera función
+TablaFrecs = function(x,k,A,p){ 
+  L = min(x)-p/2+A*(0:k)
+  x_cut = cut(x, breaks = L, right=FALSE)
+  intervals = levels(x_cut)
+  mc = (L[1]+L[2])/2+A*(0:(k-1))
+  Fr.abs = as.vector(table(x_cut)) 
+  Fr.rel = round(Fr.abs/length(x),4) 
+  Fr.cum.abs = cumsum(Fr.abs) 
+  Fr.cum.rel = cumsum(Fr.rel)
+  tabla = data.frame(intervals, mc, Fr.abs, Fr.cum.abs, Fr.rel, Fr.cum.rel)
+  tabla
+}
+
+#Segunda función
+TablaFrecs.L = function(x,L,V){
+  x_cut = cut(x, breaks=L, right=FALSE, include.lowest=V)
+  intervals = levels(x_cut)
+  mc = (L[1:(length(L)-1)]+L[2:length(L)])/2
+  Fr.abs = as.vector(table(x_cut)) 
+  Fr.rel = round(Fr.abs/length(x),4)
+  Fr.cum.abs = cumsum(Fr.abs)
+  Fr.cum.rel = cumsum(Fr.rel)
+  tabla = data.frame(intervals, mc, Fr.abs, Fr.cum.abs, Fr.rel, Fr.cum.rel)
+  tabla
+}
+
+```
+
+
+#Obtenemos las fecuencias para las Notas por medio del Hitograma
+```{r}
+LX=c(  0.00 , 1.25 , 2.50 , 3.75  ,5.00  ,6.25  ,7.50 , 8.75, 10.00)
+notasHist = hist(notas, breaks = LX, right = FALSE, include.lowest = TRUE, plot = FALSE)
+FAbs = notasHist$count
+FAbs
+FRel = prop.table(FAbs)
+FRel
+FAbsCum = cumsum(FAbs)
+FAbsCum
+FRelCum = cumsum(FRel)
+FRelCum
+
+
+```
+
+#Obtenermos las frecuencias con la funciones
+
+```{r}
+LX=c(0.00 , 1.25 , 2.50 , 3.75  ,5.00  ,6.25  ,7.50 , 8.75, 10.00)
+X=notas
+V=TRUE
+#Primera función
+TablaFrecs(X,K,A,P)
+TablaFrecs
+#Segunda función
+TablaFrecs.L(X,LX,V)  
+TablaFrecs  
+```
+
+#Calcular las medidas de dispercion para datos agrupados 
+
+#Calcular los histogramas Fre. Abs, Frec Abs Acum de las notas
+
+
+
+
+
+

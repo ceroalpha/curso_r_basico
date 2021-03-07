@@ -1,0 +1,42 @@
+---
+title: "dataframe R"
+author: "antonio"
+date: "27/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df= iris
+head(df)
+tail(df)
+names(df)
+str(df)
+
+rownames(df)
+colnames(df)
+
+dim(df)
+df$Sepal.Length[1:10]
+df$Species[1:10]
+```
+
+
+```{r}
+
+df[1:10,]
+df[1:10,2:4]
+#Un Sub data frame con filtros
+df[df$Species=="setosa" & df$Sepal.Width >4, ]
+#un sub data frame con sub filtro de filas y columnas
+df[df$Species=="setosa" & df$Sepal.Width >4, ][c(1,3) ,c(2,5)]
+```
+
+
+
+
+
+

@@ -1,0 +1,111 @@
+•---
+title: "Notas_Tema_6"
+author: "antonio"
+date: "22/10/2020"
+output: html_document
+---
+
+
+```{r}
+x= sample(1:5 , size=12, replace=TRUE)
+x
+
+respuestas=factor(sample( c ("SI","NO"),size=12, replace=TRUE ) )
+respuestas
+```
+
+# Tablas de contingencia
+
+```{r}
+datos = factor(c("H", "M", "M", "M", "H", "H", "M", "M"))
+# la funcion table(datos); genera le frecuencia absoluta de los datos contenidos.
+table(datos)
+#Pemite filtar solo motrar los datos que sean "M" sobre el conjuntO datos
+table(datos)["M"]
+sum(table(datos))
+```
+
+
+# Ejemplo de Frecuecia Relativa
+
+$$f_i = \frac{n_i}{n}$$
+
+```{r}
+#recuencia Absoluta
+print(table(respuestas))
+#Frecuencia relativa
+prop.table(table(respuestas))
+#Frecuencia relativa base porcentaje 100
+100*prop.table(table(datos))
+```
+
+# Ejercicio practico Frecuencia Absoluta, Relativa, Moda
+```{r}
+datos=c(rep("H",6),rep("M",14))
+print(datos)
+table(datos)
+prop.table(table(datos))
+names(which(table(datos)== max(table(datos))))
+
+moda <- function( data ){
+  names(which(table(data) == max(table(data))))
+}
+m_o_d_a= moda(datos) 
+```
+La moda del dataframe del ejercicio es: `r m_o_d_a`.
+
+# Ejercicio practico Frecuencia bidimensional
+```{r}
+animales=c(rep("gato",2),rep("perro",3),rep("gato",2),rep("perro",3) )
+genero=sample(c("macho","hembra"),size=length(animales), replace=T)
+#Tabla de Fecuencia bidimensional
+t(table(animales,genero))
+
+#Tambien podemos acceder a uns posicion en espesifico de dos formas diferentes
+table(animales,genero)[1,2]
+table(animales,genero)["gato","hembra"]
+
+```
+
+# Ejercicio Frecuencia bidimensional GLOBAL y MARGINAL
+
+```{r}
+#Frecuencia Global
+prop.table(table(genero,animales))
+
+#Frecuencia Marginal Filas Para fila y columna
+prop.table(table(genero,animales),margin=1)
+prop.table(table(genero,animales),margin=2)
+```
+
+
+# Paquete `gmodels`
+```{r}
+library(gmodels)
+CrossTable(genero,animales, prop.chisq = FALSE)
+```
+
+# Suma de filas y columnas 
+```{r}
+variable=  table(genero,animales)
+variable #Frecuencia Absoluta
+prop.table(variable)  #Frecuencia Relativa
+prop.table(variable)  #Frec. Rel. Global
+prop.table(variable,margin=1) #Frec. Rel Marginal por genero
+prop.table(variable,margin=2) #frec. Rel MArginal por Animal
+
+#
+colSums(variable)
+rowSums(variable)
+colSums(prop.table(variable))
+rowSums(prop.table(variable))
+
+#tambien podemos hacer uso de la funcion applay() que se uilizo en vectores
+apply(variable, FUN = sum, MARGIN = 1) #Funcion suma
+apply(variable, FUN = sqrt, MARGIN = c(1,2))  #Funcion Raiz cuadrada
+
+```
+
+
+
+

@@ -28,36 +28,36 @@ head(df)
 ```
 
 
-# Carga desde URL
+<!-- # Carga desde URL -->
 
-```{r}
-df2 = read.table("https://maitra.public.iastate.edu/stat501/datasets/bulls.dat",
-                 header = FALSE, 
-                col.names = c("breed", "sale_price", "shoulder",
-                          "fat_free", "percent_ff", "frame_scale",
-                          "back_fat", "sale_height", "sale_weight"),
-                sep = "", dec = ".")
-head(df2)
-str(df2)
-```
+<!-- ```{r} -->
+<!--   df2 = read.table("https://maitra.public.iastate.edu/stat501/datasets/bulls.dat", -->
+<!--                  header = FALSE,  -->
+<!--                 col.names = c("breed", "sale_price", "shoulder", -->
+<!--                           "fat_free", "percent_ff", "frame_scale", -->
+<!--                           "back_fat", "sale_height", "sale_weight"), -->
+<!--                 sep = "", dec = ".") -->
+<!-- head(df2) -->
+<!-- str(df2) -->
+<!-- ``` -->
 
 
-# Factores en un DF
+<!-- # Factores en un DF -->
 
-```{r}
-df3 = read.table("https://maitra.public.iastate.edu/stat501/datasets/olive.dat",
-                 stringsAsFactors = FALSE,
-                 header = TRUE)
-str(df3)
-```
+<!-- ```{r} -->
+<!-- df3 = read.table("https://maitra.public.iastate.edu/stat501/datasets/olive.dat", -->
+<!--                  stringsAsFactors = FALSE, -->
+<!--                  header = TRUE) -->
+<!-- str(df3) -->
+<!-- ``` -->
 
-# Guardar un DF
+<!-- # Guardar un DF -->
 
-```{r}
-write.table(df3, file = "../../data/olive.txt", dec = ".")
-df4 = read.table("../../data/olive.txt", header = TRUE, dec = ".")
-head(df4)
-```
+<!-- ```{r} -->
+<!-- write.table(df3, file = "../../data/olive.txt", dec = ".") -->
+<!-- df4 = read.table("../../data/olive.txt", header = TRUE, dec = ".") -->
+<!-- head(df4) -->
+<!-- ``` -->
 
 
 # Crear un DF
