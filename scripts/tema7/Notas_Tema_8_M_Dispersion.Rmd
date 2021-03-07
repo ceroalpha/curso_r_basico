@@ -108,8 +108,81 @@ sd(alumno_c,na.rm = TRUE)
 print(alumno_A)
 boxplot(alumno_A, main="Diagrama de Caja") #Con una sola caja
 print(alumno_B)
-boxplot(alumno_A,alumno_B, main="Diagrama de Caja") #Copn 3 vectores 
+boxplot(alumno_A,alumno_B, main="Diagrama de Caja",names=c("alumno_A","alumno_B")) #Copn 3 vectores 
 
 ```
+
+
+## Ejemplo del Iris
+
+```{r}
+#Hacer el boxplot de la circunferencia del tronco
+boxplot(iris$Sepal.Length~iris$Species, col="lightblue") #Una forma
+boxplot(Sepal.Length~Species,data =iris,col="lightblue") #omitiendo el nombre del dataframe
+
+```
+
+## Ejemplo del body
+
+```{r}
+#Hacer el boxplot de la circunferencia del tronco
+body=read.table("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/bodyfat.txt", header=TRUE)
+boxplot(body)
+
+#Diagrama de caja
+boxplot(body[,7:9], main="Diagrama Caja y Bigote de body", names= c("pecho","abdomen","cadera") )
+
+
+```
+
+
+## Ejemplo de Arbol de naranjos
+```{r}
+boxplot(circumference~Tree, data = Orange, ylab = "Circunferencia del tronco (mm)", 
+        main = "Boxplot de los naranjos en función del tipo de árbol")
+
+
+boxplot(Sepal.Width~Species, data = iris, ylab = "Anchura del sétalo (cm)",
+        notch = TRUE, col = c("cyan","cyan2","cyan4"),
+        main = "Boxplot de iris")
+
+boxplot(Sepal.Width~Species, data = iris, ylab = "Anchura del sétalo (cm)")
+medias = aggregate(Sepal.Width~Species, data = iris, FUN = mean)
+points(medias, col = "pink", pch = 15)
+```
+
+
+
+
+## Ejemplo Analisis Spray Insecticidad 
+
+```{r}
+Insect_data= InsectSprays  # Cargamos los datos a una variable con los datos de DF original
+head(Insect_data) #Mostramos las primeras 6 obssrvaciones del dataframe
+str(Insect_data)  #Mostramos la estructura del dataframe
+
+table(Insect_data)
+```
+
+
+```{r}
+#Analizamos las medidas de tendencia cental de los spray (MIN, MAX,Q2,Q3,MEDIAN)
+#sintaxis:  by(variable_num,variable_fac, FUN=funcion)
+by(Insect_data$count,Insect_data$spray,FUN=summary) #summary =Regresa un resumen de M. Tendencia Cental
+```
+
+
+```{r}
+#Agregamos la variable spray, para identificar por medio dela funcion desviacion estandar
+#que insectisida esta mas alejado de la media (son los mas efectivos)
+aggregate(count~spray, data=Insect_data, FUN=sd)
+```
+
+```{r}
+#Para confirmar que los insectisida es mas efectivo sera el grafico mas alargado.
+boxplot(count~spray , data=Insect_data, col="lightgreen",xlab="Tipo spray",ylab="Insectos eliminados")
+```
+
+
 
 

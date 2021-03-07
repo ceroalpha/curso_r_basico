@@ -64,3 +64,4 @@ points(media,col="red",pch=22 )
 
 
 
+

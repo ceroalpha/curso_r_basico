@@ -111,7 +111,7 @@ intervalos =cut(cangrejo$width, breaks=c(21,25,29,33,Inf), right = FALSE,
 #Del intervalo de datos que obtenermos , ahora le asignamos un orden
 cangrejo$width.rank=ordered(intervalos)
 str(cangrejo) #Visualisamo la nueva variable en el dataframe
-
+head(cangrejo)
 # Nos interesa estudiar la distribución de las anchuras de los cangrejos según el número de colores. Por lo tanto, vamos a calcular las tablas bidimensionales de frecuencais relativas y relativas acumuladas de los intervalos de las anchuras en cada nivel de color y las representaremos por medio de diagramas de barras.
 
 Tabla = table(cangrejo[,c(1,6)])  #Nos quedmos con las columas de la 1 - 5
