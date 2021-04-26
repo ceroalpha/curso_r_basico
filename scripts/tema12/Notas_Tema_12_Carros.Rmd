@@ -1,0 +1,205 @@
+---
+title: "Notas_Tema_12_Carros"
+author: "antonio"
+date: "12/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{python}
+import numpy as np
+import pandas as pd #librerias para manipular y analizar datos 
+import matplotlib.pyplot as plt  #librerias para graficos apartir de datos en listas
+from ggplot import mtcars
+
+data = mtcars
+
+data.index= data["name"] #Asignamos a la variable "name" como variable indice del dataset 
+print(data.head())
+```
+
+
+### Medidas de Centralizacion
+```{python}
+print(data.mean())  #Media de los datos por Columna
+print(data.mean(axis=1)) #media de los datos por fila (con ayuda de axis=1)
+print(data.median()) #Mediana de los datos o Percentil 50 (equivale al 50% de datos hacia arriba y abajo )
+print(data.mode()) #Moda, que es el dato con mas frecuencia absoluta
+```
+
+
+### Medida vs Distribuciones 
+```{python}
+
+#La finalidad es mostrar como es una graficaq de "Distribucion Nomal" y pintar las medidas de cnetralizacion
+plt.clf() #Elimina instancia al grafico
+norm_data=pd.DataFrame(np.random.normal(size=100000)) #Genrea un dataframe con una muestra de n valores
+norm_data.plot(kind="density", figsize=(8,8)) #Pinta el dataframe 
+
+plt.vlines(norm_data.mean(), ymin=0, ymax=0.4, linewidth=4.0, color="red" )
+plt.vlines(norm_data.median(), ymin=0, ymax=0.4, linewidth=2.0, color="green" )
+plt.show()
+
+
+#DISTRIBUCION SESGADA A LA IZQ
+#La finalidad es mostrar como es una graficaq de "Distribucion Nomal" y pintar las medidas de cnetralizacion
+plt.clf() #Elimina instancia al grafico
+skewed_data=pd.DataFrame(np.random.exponential(size=100000)) #Genrea un dataframe con una muestra de n valores
+skewed_data.plot(kind="density", figsize=(8,8), xlim= (-1-5) ) #Pinta el dataframe 
+
+plt.vlines(skewed_data.mean(), ymin=0, ymax=1, linewidth=4.0, color="red" )
+plt.vlines(skewed_data.median(), ymin=0, ymax=1, linewidth=2.0, color="green" )
+plt.show()
+
+
+#DISTRIBUCION SESGADA CON OUTLIER
+norm_data= np.random.normal(size=50)  #Un dataframe con una muestra de 50 
+norm_data  
+outlier = np.random.normal(15,size=3)  #Generamos los outlier
+outlier
+
+#Concatenamos los 2 dataframe, axis= 0 permite concatenar como fila(uno abajo de otro) 
+combined_data= pd.DataFrame(np.concatenate((norm_data,outlier),axis= 0)) 
+
+combined_data.plot(kind="density", figsize=(8,8), xlim=(-5,20)) #Pinta el dataframe 
+plt.vlines(combined_data.mean(), ymin=0, ymax=1, linewidth=4.0, color="red" )
+plt.vlines(combined_data.median(), ymin=0, ymax=1, linewidth=2.0, color="green" )
+plt.show()
+
+#NOTA: En la slaida podemos apreciar que ajustando los datos con los outliers, las medida de tendencia 
+#central  que mas sufre es la media por el efecto de los aoutlier
+
+
+```
+
+
+### Medidas de dispersion (Representan la variacion de los datos, como estan dispersos)
+  - Rango "mpg", five_nums, Cuartiles
+```{python}
+
+from ggplot import mtcars
+rango=  max(mtcars["mpg"])-min(mtcars["mpg"])  #Calculamos el rango 
+print(rango)
+
+#Distribucion central de los datos para ver como se dispersan, por que te da los 5 cuantiles
+five_num= [
+mtcars["mpg"].quantile(0),
+mtcars["mpg"].quantile(0.25),
+mtcars["mpg"].quantile(0.5),
+mtcars["mpg"].quantile(0.75),
+mtcars["mpg"].quantile(1.0)]
+print(five_num)
+#Describe(), permite calcular los cuantiles y las mediddas de dispersion 
+print(mtcars["mpg"].describe())
+
+#Calculamos el rango intercuartilico RIQ (Equivale al 50% de datos), consta de restar el Q3(75%) - Q1(25%) 
+print(mtcars["mpg"].quantile(0.75)-mtcars["mpg"].quantile(0.25))
+
+
+#BOX PLOT CON LAS MEDIDAS DE CENTRALIZACION
+import matplotlib.pyplot as plt  
+plt.clf()  #limpiamos el grafico
+
+#boxplot(colum=<columna a graficar>,return_type=<pinta el plot>,figsize=<(largo y ancho del grafico)> )
+mtcars.boxplot(column="mpg", return_type="axes", figsize=(10,10))
+
+plt.text(x= .8, y= mtcars["mpg"].quantile(0.25),s="1er Cuartil")
+plt.text(x= .8, y= mtcars["mpg"].quantile(0.50),s="Mediana")
+plt.text(x= .8, y= mtcars["mpg"].quantile(0.75),s="3er Cuartil")
+plt.text(x= .8, y=mtcars["mpg"].quantile(0),s="Min")#Tambien funciona  min( mtcars["mpg"])
+plt.text(x= .8, y=mtcars["mpg"].quantile(1.0),s="Max") #Tambien funciona  max( mtcars["mpg"])
+
+plt.text(x= .6, y= mtcars["mpg"].quantile(0.50),s="RIC", rotation=90, size=20  )  #Rango Intercuartilico
+
+plt.show()
+```
+
+
+# Varianza y desviacion tipica
+
+```{python}
+#Estos valores derivan de la media, por lo que son muy influenciables por el sesgo
+print("Varianza: "+str(mtcars["mpg"].var() )) 
+print("Desviacion tipica: "+str( mtcars["mpg"].std()) ) 
+
+
+#Desviacion Mediana Absoluta: Se emplea para el analisis de la dispersion de los datos
+#Esta medida se bas en la mediana, por lo que no es influyente de la "media"
+
+K=1.4826 #Factor de escala, calcula del 3er cuartil de Desviacion Normal de la Mediana Absoluta
+MAD= abs(mtcars["mpg"]-mtcars["mpg"].median()) 
+print(MAD.median()*K)
+
+```
+
+- Sesgo y Curtosis
+  - Sesgo: Determina la distribucion de los datos a la Izq. o Der. o Centro, y con base a la curva ver si esta sesgado +/-
+  - Curtosis: Determina que tan pocuda es la cresta de la curva 
+
+```{python}
+from ggplot import mtcars
+
+#Calculamos el Sesgo, Si es "+", estan inclinado a la Derecha, Esto se puede validar si se mira las curtosis de la variable
+print(mtcars["mpg"].skew())
+#Calculamos la Curtosis de la variable 
+print(mtcars["mpg"].kurt()) 
+```
+
+
+
+## Medias de forma para ver como se distribuyen por medio de un grafico
+### sirve para analizar la forma de los datos, si hay un sesgo, una curtosis, si son uniformes
+### y asi poder modelarlos y generar algoritmos para predecir perfiles, analizar ventas de producto 
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Muestra con datos de una Distribucion Normal
+norm = np.random.normal(size=100000) 
+#Generamos otra muestra, con nombre "Sesgo", esto con la finalidad de mostrar que la curva esta hacia la Izquierda(+)
+#Se concatenan dos muestras una normal y una exponencial , axis: Permite apilar una abjo de otra
+skew = np.concatenate((np.random.normal(size=35000)+2, 
+                       np.random.exponential(size=65000)),
+                      axis = 0)  
+#Generamos otra muestra con distibucion Uniforme(grafico plano), simetrico de -2, 2 
+#Tenemos que la curtosis es baja por que la curva no es un pincho si no totalmente plana ejemplo -1.20 ,-0.22. 
+#El sesgo es casi nulo por que no esta inclinada  hacia la IZQ o DER 
+unif = np.random.uniform(-2,2,size = 100000)
+#Generamos una muestra con dos exponenciales una es positiva y la otra es una exponencial negativa
+#Es una distribucion acampanada, el Sesgo es casi cero por que no esta inclinada a la IZQ o DER por construccion
+#Tenemos que la Curtosis es un pincho muy prominenete por lo que la curtosis es muy grande ejemplo 2 o 3
+peak = np.concatenate((np.random.exponential(size=50000),
+                      np.random.exponential(size=50000)*(-1)),
+                      axis = 0)
+
+
+data = pd.DataFrame({
+  "normal": norm,
+  "skew": skew,
+  "unif": unif,
+  "peak": peak
+})
+
+plt.clf()
+data.plot(kind="density", figsize = (10,10), xlim = (-5,5))
+plt.show()
+
+#Calculamos el Sesgo y la curtosis de la muestra que es una "Distribucion Normal"
+#Es simetrica ya que no se inclina a la ISQ o DER si no que esta centralizada
+print("Normal, Sesgo = %f, Curtosis = %f"%(data["normal"].skew(), data["normal"].kurt()))
+#Calculamos el Sesgo y la curtosis de la muestra que es una "Distribucion Exponencial"
+print("Normal+Exp, Sesgo = %f, Curtosis = %f"%(data["skew"].skew(), data["skew"].kurt()))
+#Calculamos el Sesgo y la curtosis de la muestra que es una "Distribucion Uniforme, aqu"
+print("Uniforme, Sesgo = %f, Curtosis = %f"%(data["unif"].skew(), data["unif"].kurt()))
+#Calculamos el Sesgo y la curtosis de la muestra que es una "Distribucion Exponencial +/-"
+print("Suma de Exp, Sesgo = %f, Curtosis = %f"%(data["peak"].skew(), data["peak"].kurt()))
+```
+
+
+
+
+

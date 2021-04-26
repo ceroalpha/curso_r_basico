@@ -1,0 +1,65 @@
+---
+title: "Notas_Tema_11_Distribucion_Bernoulli"
+author: "antonio"
+date: "22/3/2021"
+output: html_document
+---
+
+
+## Funfion de densidad 
+Sea  $X= Be(p=0.7)$, ls distribucion que modela la probabilidad de obtener una cara usando una moneda trucada.
+
+$$f(k)=p^k(1-p)^{1-p},\ k\in \{0,1\}  $$
+## En R
+
+```{r}
+#Instalar el paquete Rlab: 1) Desde consila install.packages("Rlab") , 2) Desde Packages 
+
+library(Rlab) #Cargamos el paquete de funciones de distrbucion
+#Donde P:  Probabilidad de exito 
+
+#Probabilidad
+dbern(0,prob=0.7) #En este caso la probabilidad de sacar 0,  [1] 0.3
+dbern(1,prob=0.7) #En este caso la probabilidad de sacar 1,  [1] 0.7
+#Modela el comportamiento de probabilidad de obtener exito o fracaso en un experimento que se hace una sola vez
+
+#Distribucion acumulada
+pbern(0,prob=0.7)  #En este caso la D.Acumulada de 0,  [1] 0.3
+pbern(1,prob=0.7)  #En este caso la D.Acumulada de 1,  [1] 1
+
+#Cuantiles
+qbern(0.5,prob=0.7)  #En este caso Q50 (mediana), [1] 1
+qbern(0.25,prob=0.7) #En este caso Q25,  [1] 0
+
+#Numeros aleatorios
+rbern(100,prob=0.7)  #numeros aleatorios con probabilidad de 0.7( 70=1, 30=0)
+rbern(100,prob=0.7) -> data
+hist(data)  #histograma  de los datos 
+
+```
+
+
+## En R
+
+```{python}
+
+from scipy.stats import bernoulli #Importamos el paquete para las hacer uso de la D. Bernoulli
+import matplotlib.pyplot as plt  #para pintar graficos 
+
+p = 0.7
+
+#Genera de una sola instruccion la diustribucion teorica: Media, varianza, sesgo, curtosis
+mean,var,skewm,kurt= bernoulli.stats(p,moments="mvks")
+
+print("Media %f",mean)
+print("Varianza %f",var)
+print("Sesgo %f",skew)
+print("curtosis %f",kurt)
+
+#Funcion de probabilidad con el grafico
+fix, ax = plt.subplots(1,1) #solo una figura de grafico 
+x = bernoulli.rvs(p, size = 1000) #Valores aleatorios de la muestra y 1000 datos
+ax.hist(x) #Histograma
+plt.show() #Pinta el histograma, de Distribucion exito, fracaso de los datos
+```
+

@@ -1,0 +1,158 @@
+---
+title: "Notas_Tema_10_Regresion_Lineal"
+author: "antonio"
+date: "7/3/2021"
+output: html_document
+---
+
+
+```{r}
+#Importamos el dataframe
+body = read.table("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/bodyfat.txt", header = TRUE)
+head(body,3)
+
+```
+
+```{r}
+#Más concretamente, trabajaremos con las variables fat y weight.
+
+body2=body[,c(2,4)]  #Nos quedamos con todas las filas y las columnas numero 2 y numero 4
+names(body2) =c("Grasa","Peso") #Renombramos las columnas 2 y 4 por Grasa y Peso
+head(body2)    #Mostramos las primeras 5 filas del nuevo dataframe
+str(body)
+
+plot(body2)   #Graficamos los datos para ver su distribucion
+
+# Si x e y son dos variables de un data frame, para calcular la recta de regresión de "y" en función de "x" podemos usar la instrucció para estimar el modelo linea 
+
+#Donde (<$Variable a predecir(Dependientes) > <Variables a utilizar para predecir(Independientes)>)
+lm(body2$Peso~body2$Grasa)     #Calculamos la recta de regresion 1 (Recta de Grasa en funcion de peso )
+lm(Peso~Grasa, data = body2)   #Calculamos la recta de regresion opcion 2
+
+
+#Se optienen los coeficientes, en ambos casos significa que la recta de regresión para nuestros datos es
+#Para estrimar el Peso hay que multiplicar la: Grasa*2.151+137.738
+#y=2.151x+137.738 (De esta forma de describe el modelo lineal)
+
+#Ahora podemos superponer esta recta de regresion lineal a nuestro grafico(plot), con la funcion abline()
+#abline()=  Pinta una linea dada la pendiente y ordenada en el origen 
+abline(lm(Peso~Grasa, data = body2), col = "purple") #recta de Reg Lineal que mejor se ajusta a los datos
+
+#Recta Minimos cuadrados, es unica, la que da menor error cuadrado
+
+
+#PREDICCIONES
+#El Coeficiente se encuentra en el intervalo [0,1]. Si es mayor a 0.9, consideraremos que el ajuste es bueno. 
+#De lo contrario, no.
+
+#Para obtener el valod de R Cuadrado aplicamos el summary (Regresa un resumen)
+#1.Formul aplicada 
+#2 Residuos Diferencias entre el valor Real emtre el minimo y maxicmo
+#3.Coeficiente y errores 
+#4.Factor Rcuadrado muntiple y Rcuadrado ajustado
+
+summary(lm(Peso~Grasa, data = body2))$r.squared  #La relaicon entre el peso y la grasa no es lineal
+
+#En este caso, hemos obtenido un coeficiente de determinación de 0.3751, cosa que confirma que la recta de #regresión no es lineal y no aproxima nada bien nuestros datos.
+
+```
+
+
+```{r}
+#Rectas de regresión y transformaciones logarítmicas
+
+
+#VECTORES DE DATOS, UTILIZARAN COMO EJEMPLO PARA CREAR MODELO LINEAL
+dep = c(1.2,3.6,12,36) #DEPENDIENTE - EJE dE Y
+ind = c(20,35,61,82)  #INDEPENDIENTE - EJE DE LAS X
+
+#Plot de datos, escala lineal
+plot(ind,dep, main = "Escala lineal")
+#Plot de datos Con escala semilogaritmica
+plot(ind,dep, log = "y", main = "Escala semilogarítmica")
+
+
+#Modelo lineal de trasnformar el log en base 10 de DEPENDIENTE de la INDEPENDIENTE
+lm(log10(dep)~ind)
+#Coefficients:
+#(Intercept) (Ordenada)         ind  (Pendiente )
+#   -0.32951                    0.02318 
+
+# Si hacemos uin summary de ese modelo, podemos afirmar que como se acerca a 1 es en efecto un recta
+# o que los datos se distribuyen en forma de recta
+summary(lm(log10(dep)~ind))$r.squared
+# [1] 0.9928168
+
+```
+
+
+```{r}
+#EJEMPLO 2
+# 
+# Lo que acabamos de obtener es que
+# 
+# log(dep)=0.023⋅ind−0.33
+# es una buena aproximación de nuestros datos.
+# 
+# Con lo cual
+# 
+# dep=100.023⋅ind⋅10−0.33=1.054ind⋅0.468
+# 
+
+# Con este grafico se demuestra que la nube de puntos lineal se ajusta perfectamente a los datos 
+plot(ind,dep, main = "Curva de regresión")
+curve(1.054^x*0.468, add = TRUE, col = "purple") #Permite añadir la curva de regresion
+```
+
+```{r}
+# EJEMPLO 3
+
+tiempo = 1:10  #Como variable dependiente
+gramos = c(0.097,0.709,2.698,6.928,15.242,29.944,52.902,83.903,120.612,161.711) #Como variable independiente
+d.f = data.frame(tiempo,gramos)  #Creamos el dataframe con las dos variables
+
+#Se pintan los graficos que tiene forma de curva y njo de recta 
+plot(d.f) #Lo graficamos con plot
+plot(d.f, log = "y") #graficamos con plot semi logaritmic, sobre el eje de "Y"
+plot(d.f, log = "xy") #graficamos con plot doble logaritmico,  sobre el eje de "XY"
+
+
+#Posterior al analisis de los 3 graficos, se visualiza que la grafica 3 tiene mas similitud de recta
+#Aplicamos un modelo lineal log base 10 tanto a gramos como a tiempo
+
+lm(log10(gramos)~log10(tiempo), data = d.f)
+
+# Call:
+# lm(formula = log10(gramos) ~ log10(tiempo), data = d.f)
+# 
+# Coefficients:
+#   (Intercept) ordenada en el origen   log10(tiempo) Coeficiente  
+#        -1.093                          3.298 
+
+
+#Factor R cuadrado mas cercano a 1, lo que ratifica que el log 10 se reproduce con base al tiempo
+summary(lm(log10(gramos)~log10(tiempo), data = d.f))$r.squared 
+
+#[1] 0.9982009
+
+
+# Lo que acabamos de obtener es que
+# 
+# log(gramos)=3.298⋅log(tiempo)−1.093
+# es una buena aproximación de nuestros datos.
+# 
+# Con lo cual
+# 
+# gramos=103.298⋅log(tiempo)⋅10−1.093=tiempo3.298⋅0.081
+
+# SE OBSERVA UNA RELACION POTENCIA ENTRE GRAMOS Y TIEMPO(PILINOMIO)
+# 
+plot(d.f, main = "Curva de regresión")
+# Los valores que se pintan en la Curva, se colocaron de acuerdo a lo arrojado en el modelo  de summary()
+# La cuerva de regresion (se ajusta perfectamente a los datos), pasa muy cerca de los puntos de la distribucion
+curve(x^(3.298)*0.081, add=TRUE, col = "purple") 
+
+```
+
+
+

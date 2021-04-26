@@ -1,0 +1,59 @@
+---
+title: "Notas_Tema_11_Distribucion_Normal"
+author: "antonio"
+date: "7/4/2021"
+output: html_document
+---
+
+
+## En `R`
+
+```{r}
+
+ #Calculamos la funcion de densidad con una media= 50 y una desviacion estandar de 5 puntos
+dnorm(1:100, mean = 50, sd = 5 )
+#EL grafico representa una distribucion normal, por que la media,mediana,moda estan en el pico de la Curva
+plot(1:100,dnorm(1:100, mean = 50, sd = 5 ),type = "l",col="red") 
+# Calculamos la funcion de distribucion acumulada con una media= 50 y una desviacion estandar de 5 puntos
+pnorm(1:100, mean = 50, sd = 5)
+#El grafico va sumando las probabilidades hasta llehgar a 1, que es la probabilidad total
+plot(1:100,pnorm(1:100, mean = 50, sd = 5),type = "l",ylim=c(0,1),col="red")
+#Calculamos el Cuartil 1(.25 de los datos)
+qnorm(0.25, mean = 50, sd = 5, lower.tail = TRUE, log.p = FALSE)
+#Generamos 100 valores aleatorios con media 50 y desviacion 3
+rnorm(100, mean = 50, sd = 3) -> datos
+datos
+plot(1:100,datos,col="blue")
+
+```
+
+## Ejercicio 
+Dada una variable aleatoria continua $Z$, con distribucion normal estandar, es decir,$N(0;1)$, encuentre las siguientes probabilidades:$0\le Z \le 1.25$
+
+```{r}
+med= 0
+std= 1
+x=seq(from=-1.50,to=1.50,0.25)
+x
+dnorm(x,mean=med,sd=std)
+pnorm(x,mean=med,sd=std)
+qnorm(0.75, mean=med,sd=std, lower.tail = TRUE, log.p = FALSE)
+
+#La probabilidad de que Z sea menor que 1.25 es = 0.8943502+  
+plot(x,dnorm(x,mean=med,sd=std),type = "l",col="red")
+```
+
+
+## Ejercicio 1
+
+```{r}
+med= 10
+std= 2
+x=seq(from=1,to=20,1)
+dnorm(x,mean=med,sd=std)
+pnorm(x,mean=med,sd=std)
+
+#La probabilidad de que Z sea menor que 1.25 es = 0.8943502+  
+plot(x,dnorm(x,mean=med,sd=std),type = "l",col="red")
+```
+

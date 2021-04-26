@@ -1,0 +1,71 @@
+---
+title: "Notas_Tema_12_Pokemon"
+author: "antonio"
+date: "11/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)  #Cargasmos Reticulate, libreria que sirve para hacer el intercambio entre R y Python
+#user_python("path")  #Configuramos la version de python que deseamos utilizar
+
+## EN CONSOLA NOS AYUDA A SABER DONDE ESTA TOMANDO LA VERSION DE PYTHON 
+#> Sys.which("python")
+#"C:\\Users\\anton\\AppData\\Local\\R-MINI~1\\envs\\R-RETI~1\\python.exe" 
+
+``` 
+
+# Pokemon de (Py -> R)
+##Limpieza de datos en python
+```{python}
+import pandas as pd
+pokemon= pd.read_csv("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/Pokemon.csv")
+print(pokemon.head())
+print(pokemon.shape)
+
+pokemon=pokemon[pokemon["Generation"]==1]  #Filtramos el dataset y solo nos quedamos con Generation=1
+pokemon=pokemon[["Type 1", "Type 2", "Speed"]]  #Filtramos el dataset y solo nos quedamos con determinadas columnas
+print(pokemon.shape)
+pokemon=pokemon.dropna()#Eliminamos los valores NA  del dataset
+print(pokemon.shape)
+
+```
+
+
+## Transmision de los datos de Python a R
+```{r, fig.width=7, fig.height=4 } 
+#Desde un entorno R, accedemos al dataset con un "py" , ejemplo py$<dataset>[<fil>,<col>]
+hist(py$pokemon[,"Speed"], breaks=10, main="Velocidad de los pokemon")
+
+```
+
+# Pokemon (R -> Py)
+## Carga de datos en R
+```{r}
+pokemon= read.csv("C:/Users/anton/OneDrive/Documents/Cursos/Estadistica descriptiva R y Python/Repositorio/curso_r_basico/data/Pokemon.csv", head=TRUE)
+head(pokemon,5)
+
+
+library(tidyverse)  #importamos la libreria para hecer uso de la Funcion filtery Select
+pokemon2 <- pokemon %>%  #Del data set principal generamos uno con filtros 
+  filter(Generation==1) %>% #  Solo de la primera generacion
+  select(Type.1, Type.2,Speed) %>% #Solo 3 columnas
+  na.omit()   #elimine los valores null
+head(pokemon2,5)
+summary(pokemon2)  #hacemos la tabla de frecuencias absolutas
+
+```
+
+
+## Transmision de los datos de R a Python
+
+```{python}
+#Desde un entorno Python, accedemos al dataset con un "r", ejemplo r.<dataset>
+print(r.pokemon2.head())
+
+
+```
+
+
+

@@ -1,0 +1,80 @@
+---
+title: "Tema_11_Distribucion_Uniforme"
+author: "antonio"
+date: "3/4/2021"
+output: pdf_document
+---
+
+## Distribución Uniforme
+
+Supongamos que $X\sim U([0,1])$ entonces podemos estudiar sus parámetros
+
+## En `R` 
+```{r}
+a = 0 # Intervalo Minimo
+b = 1 #Intervalo Maximo
+
+#donde punif(<probabilidad>,<Intervalo MIN>,<Intervalo MAX>)
+dunif(0.5, min=a,max= b)
+
+
+x = seq(-0.1, 1.1, 0.1) #generamos la secuencia de valores en intervalo -0.1: 1.1 (probabilidad siempre es 1)
+plot(x, dunif(x, min = a, max = b)) #plot funcion de densidad
+plot(x, punif(x, a, b), type = "l") #plot de funcion de distribucion acumulada,. type = "l"(Pinta como linea) 
+qunif(0.5, a, b)
+#histograma  que pint alos intervalos y las frecuencia de los numeros aletorios
+runif(1000000, a, b) -> data   #Generamos valores aleatorios uniformes
+hist(data)  
+```
+## Ejemplo Examen MAT
+```{r}
+#El tiempo en que tarda un estudiante en solucionar  un examen  de MAT, esta entre 40 y 120 min
+#¿Cual es la probabilidad que un estudiante se demore menos de 60 min en solucionar  el examen?
+
+a=40
+b=120 
+x = seq(1, 120, 1)
+#donde punif(<probabilidad>,<Intervalo MIN>,<Intervalo MAX>)
+dunif(x, min=a,max= b)
+punif(x, min=a,max= b)
+plot(x, punif(x, a, b), type = "l")
+
+```
+
+
+## En `Python` 
+
+```{python}
+#Importamos las librerias 
+from scipy.stats import uniform
+import matplotlib.pyplot as plt 
+import numpy as np
+
+a= 0 #Intervalo Minimo
+b= 1 #Intervalo Maximo
+loc= a # Minimo
+scale= b-a # Maximo
+
+
+fig, ax = plt.subplots(1,1) #Creamos la instacia de figura y los ajes
+
+rv = uniform(loc = loc, scale = scale) #Creamos la uniforme en 0:1 como parametro
+mean, var, skew, kurt = rv.stats(moments = 'mvsk') #Calculamos los momentos para una variables continua 
+
+print("Media %f"%mean)
+print("Varianza %f"%var)
+print("Sesgo %f"%skew)
+print("Curtosis %f"%kurt)
+
+#Funcion de Densidad 
+x = np.linspace(-0.1, 1.1, 120) #Con np.linspace genermos datos que van del intervalo -0.1:1.1, 120 valores
+ax.plot(x, rv.pdf(x), 'k-', lw = 2, label = "U(0,1)")  #Pintamos el grafico de funcionn de densidad de 
+
+#probabilidad
+r = rv.rvs(size = 100000) #Geneamos una  distribucion aleatoria para integrarla al grafic y con escala 
+#Histrograma en formato densidad, <muestar>,density=True, histtype=Escalonada, alpha =<Opacidad>
+ax.hist(r, density = True, histtype = "stepfilled", alpha = 0.25) 
+
+ax.legend(loc = 'best', frameon = False)#Pintamos las leyendas 
+plt.show()
+```

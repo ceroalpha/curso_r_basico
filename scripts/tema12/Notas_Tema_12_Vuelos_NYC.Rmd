@@ -1,0 +1,49 @@
+---
+# title: "Notas_Tema_12_Vuelos_NYC"
+author: "antonio"
+date: "12/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)  #Cargasmos Reticulate, libreria que sirve para hacer el intercambio entre R y Python
+
+#NOTA: Para este ejemplo se requiere instalar en consola el paquete de datos nycflights13
+# > install.packages("nycflights13")
+```
+
+
+## Vuelos de NYC
+```{r} 
+data <- nycflights13::flights  #De este modo acedemos al paquete sin tener que hacer el import
+head(data)
+summary(data)
+```
+
+
+```{python}
+
+pydata= r.data #Accedemos al data set de vuelos generado en R, creamos una valiabe que utilizaremos como alias
+pydata=pydata[pydata["dest"]=="ORD" ]
+pydata=pydata[["carrier","dep_delay","arr_delay","origin"]]
+pydata=pydata.dropna()
+
+print(pydata.head())
+print(pydata.shape)
+
+pydata_plot=pydata[pydata["arr_delay"] <60*3]
+```
+
+##  Regresamos a R para manipular el dataset de Python
+
+```{r}
+summary(py$pydata)
+#Grafico de caja y bigote con oputlier
+boxplot( arr_delay~origin, data=py$pydata, main="Retraso de los vuelos hacia ORD desde NYC" )
+#Grafico de caja y bigote sin oputlier para las horas (se consideraron 3 hr de retraso)
+boxplot( arr_delay~origin, data=py$pydata_plot, main="Retraso de los vuelos hacia ORD desde NYC" )
+
+```
+
+

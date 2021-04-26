@@ -1,0 +1,36 @@
+---
+title: "Notas_Tema_11_Didtribucion_Binomial_Negativa"
+author: "antonio"
+date: "2/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## idtribucion_Binomial_Negativa
+Si $X$ es variable aleatoria que mide el "número de repeticiones hasta observar los $r$ éxitos en ensayos de Bernoulli", diremos que $X$ se distribuye como una Binomial Negativa con parámetros $r$ y $p$,
+$f(k)=(\frac{k−1} {r−1})pr(1−p)^{k−r} $
+
+
+# En "R"
+
+```{r}
+
+#Se sabe que la probabilidad de que un niño expeuesto a una enfermedadcontagiosa es de 0.4. Calcule la probabilidad #de que el 10mo niño  estudidado sea el 3ro en contraer la endermedad
+
+p=0.4
+x=10
+r=3
+dnbinom(x=0:10, size=r, p)
+
+
+p=7/11
+x=10
+r=4
+dnbinom(x=0:10, size=r, p)
+
+```
+

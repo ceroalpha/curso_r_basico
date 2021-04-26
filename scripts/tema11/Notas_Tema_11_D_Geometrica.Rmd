@@ -1,0 +1,107 @@
+---
+title: "Notas_Tema_11_Distribucion_Geometrica"
+author: "antonio"
+date: "29/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Función de densidad
+
+Sea $X=Geom(p=0.1)$ la distribución que modela la probabilidad de intentar abrir una puerta hasta conseguirlo.
+
+$$f(k) = (1-p)^{k-1}p$$
+
+
+
+## En `R`
+
+```{r}
+#Nota:la prob. al 1 er intento es la misma que la prob de Exito
+library(Rlab) 
+p = 0.1   #Probabilidad de exito al primer intento
+dgeom(0:10,p)  #Calculamos distribucion Geometrica de exito de 0-10 (independientes)
+plot( dgeom(0:10,p) ,main="Distribucion Geomatrica", col =c("red"))  #Graficamos 
+
+#Ejemplo del borracho, cuale es la probabilidad de Exito, de que al primer intento acierte,considerando de que de 20 intentos titne una probabilida de exit de  .10.
+dgeom(0:20, p)
+plot(0:20, dgeom(0:20, p),main="D.Geomatrica Borracho", col =c("green")) #Grafica probabilida de 0:20 intrentos
+plot(0:20, pgeom(0:20, p), ylim=c(0,1),main="D.Geomatrica Borracho",col=c("green")) #Distribucion ACUMULADA (100%)
+
+qgeom(0.5, p)  #El cuantil Q2, que es la mediana (mitad de intentos)
+#R=6 , esto quiere decir que el 50% de probabilidad de acertar esta en el 6to intento
+qgeom(0.75, p)  #El cuantil Q3 o 75 %
+#R=13, esto quiere decir que al intento 13 Tenemos el 75% de probabilidad de Exito al abrir la puerta
+
+hist(rgeom(10000, p)) #Experimento aleatorio con la funcion rgeom
+```
+
+
+## Ejemplo Llamadas
+
+```{r}
+p= 0.02 #probabilidad de conectar llamada 
+n= 10 #probabilidad de que respondan a la 10ma llamada 
+
+dgeom(x=10,prob=p)
+dgeom(0:10,prob=p)
+plot(0:n,dgeom(0:n,p), main="D. Geomatrica Llamadas radio", col=c("red"))
+plot(0:n,pgeom(0:n,p),ylim=c(0,1), main="Probabilidad A. de Llamadas radio", col=c("orange"))
+qgeom(0.5,p)
+#¿Cual es la probabilidad que en nuna estacion de radio responda  ala 10ma llamada?
+#R=  La Pronbabilidad de Exito es : 0.01634146
+#¿Cual es el la mediana de llamadas para conectar?
+#R=
+```
+
+
+
+## En Python
+```{python}
+
+from scipy.stats import geom
+import matplotlib.pyplot as plt
+import numpy as np
+
+fig, ax = plt.subplots(1,1)
+p = 0.3  #La probabilidad de Exito es 30% al primer intento
+mean, var, skew, kurt = geom.stats(p, moments = 'mvsk') #Media, varianza, sesgo, Curtosis
+print("Media %f"%mean)   #Media 3.333333
+print("Varianza %f"%var) #Varianza 7.777778
+print("Sesgo %f"%skew)   #Sesgo 2.031889
+print("Curtosis %f"%kurt)  #Curtosis 6.128571
+
+
+x = np.arange(geom.ppf(0.01,p), geom.ppf(0.99, p)) #"Valores del dominio(eje de X) desde 0.01-0.99
+#Distribucion Geometrica
+ax.plot(x, geom.pmf(x, p), 'bo', ms = 8, label = "Función de probabilidad de Geom(0.3)" )
+#Dibujamos lineas verticales sobre el grafico, generadas desde X hasta funcion de probabilidad
+#vlines(<desde>,<inicio>,<geom.pmf(x,p) hasta>,  colors = 'b', lw = 4, alpha = 0.5 <semi transparentes>)
+ax.vlines(x,0,geom.pmf(x,p),  colors = 'b', lw = 4, alpha = 0.5)
+
+#Random
+rv = geom(p)#Permite generar la distribucion Geometrixa
+ax.vlines(x,0,rv.pmf(x), colors = 'k', linestyles = '--', lw = 1, label = "Frozen PMF")
+ax.legend(loc = 'best')
+plt.show()
+
+#Grafica de funcion de  distribucion acumulada
+fig, ax = plt.subplots(1,1)
+prob = geom.cdf(x,p)
+ax.plot(x, prob, 'bo', ms = 8, label = "Función de distribución acumulada")
+plt.show()
+
+#Valores aleatorios 
+fig, ax = plt.subplots(1,1)
+r = geom.rvs(p, size = 10000)
+plt.hist(r)
+plt.show()
+
+```
+
+
+

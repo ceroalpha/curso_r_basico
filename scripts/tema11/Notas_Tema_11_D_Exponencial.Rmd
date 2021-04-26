@@ -1,0 +1,53 @@
+---
+title: "Notas_Tema_11_Distribucion_Exponencial"
+author: "antonio"
+date: "7/4/2021"
+output: html_document
+---
+
+## En `R`
+
+```{r}
+#Ejemplo: 
+#El tiempo de vida medio de un modelo de marcapasos es de 12 años
+#¿Cual es la probabilidad de que a una persona que se le haya implantado uno tenga que cambiarlo antes de 15 años?
+
+x= seq(1, 1, 15) 
+dexp(x,rate = 1:15,log = FALSE)
+pexp(x,rate = 1:15,lower.tail = TRUE)
+
+plot(x, dexp(x), type = "l") 
+```
+
+
+## En `Python`
+
+```{python}
+#importamos los paquetes 
+from scipy.stats import expon
+import numpy as np
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(1,1) #Dibujamos la figura y los ejes
+
+lam = 3   #Definimos el valor de lamda(variable de tiemo)
+rv = expon(scale = 1/lam)  #El parametro scale esla inversa de lamda, por lo que 1/lamda (valor)
+
+mean, var, skew, kurt = rv.stats(moments = 'mvsk') #Calculamos los momentos para una variables continua 
+print("Media %f"%mean)
+print("Varianza %f"%var)
+print("Sesgo %f"%skew)
+print("Curtosis %f"%kurt)
+
+#Con np.linspace genermos datos que van del intervalo inicio=0 , fin =20 , total de valores 1000
+x = np.linspace(0, 3, 1000)
+#plot(<datos X>,<datos Y>, "color (r-rojo),lw=<tamaño linea>,alpha=<trasnparencia>)
+ax.plot(x, rv.pdf(x), 'r-', lw = 5, alpha = 0.6, label = "Exp(10)")
+
+r = rv.rvs(size = 100000)  #Generamos los valores aleatorios para pintar uns grafica de distribucion
+ax.hist(r, density = True, histtype = 'stepfilled', alpha = 0.2) #histtype =Para que aparescan pintados
+
+ax.legend(loc = "best", frameon= False) #no pinta la caja 
+plt.show()
+```
+

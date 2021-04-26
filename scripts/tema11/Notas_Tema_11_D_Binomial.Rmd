@@ -1,0 +1,100 @@
+---
+title: "Notas_Tema_11_Distribucion_Binomial"
+author: "antonio"
+date: "23/3/2021"
+output: html_document
+---
+
+## En 'R'
+
+
+```{r}
+#Importamos paquete Rlab que nos permitira hacer uso de los metodos de las Distribuciones BInomial,Bernoulli
+library(Rlab) 
+
+n=30   #Numero de Casos del estudio
+p=0.6  #Probabilidad de exito
+plot(0:n, dbinom(0:n,size=n,prob = p))  #Graficamos plot la distribucion binomial 
+plot(0:n, pbinom(0:n,size=n,prob = p))  #Graficamos plot la probabilidad binomial acumulada 
+
+qbinom(0.5,n,p) #Cuarti 2 (mediana = 0.5 de los datos)
+qbinom(0.25,n,p)  #Cuarti 1 (0.25 de los datos)
+
+#Muestra aleatorioa de 1000 casos con "n"= 30 repeticiones y probabilidad "p"
+#rbinom(1000,n,p)
+hist(rbinom(100000,n,p), breaks =0:30)
+
+```
+
+```{r}
+#Ejemploprobabilidad bibomial de Hamburguesas 
+n = 5  #numero de Ensayos 
+p = 0.8  #Probabilidad de exito
+dbinom(0:n,size=n,prob=p)
+pbinom(0:n,size=n,prob=p)
+plot(0:n, dbinom(0:n,size=n,prob=p))
+barplot( dbinom(0:n,size=n,prob=p))
+plot(0:n, pbinom(0:n,size=n,prob=p))
+
+#La probabilida dde que solo a dos clientes le guste la Hamburguesa es: 0.05792
+```
+
+
+## En Python 
+
+```{python}
+
+#importamos el paquerte de librerias  python que se necesitan para hacer uso de la distribucion binomial
+
+from scipy.stats import binom 
+import matplotlib.pyplot as plt
+import numpy as np
+
+fig, ax= plt.subplots(1,1)  #figuara para pintar el grafico
+n = 7
+p =0.4 #probabilidad de exito
+
+#scipy.stats , regresa 4 estadisticos que son: media , varianza, sesgo, curtosis
+mean,var, skew,kurt= binom.stats(n,p,moments="mvsk") 
+print("Media %f"%mean) 
+print("Varianza %f"%var)
+print("Sesgo %f"%skew)  # Es positivo, este indica que esta ligeramente inclinado a la Izq
+print("Curtosis %f"%kurt) #Es negativa por que la distribucion no es plana
+
+x= np.arange(0,n+1) #Eje de las X desde 0 hasta 7
+#Graficamos la funcion de distribucion 
+#donde x= <valores, funcion de probabibilidad>, "bo" <color azul y figura circulo>, ms= 8 puntos, label=<titulo>  
+ax.plot(x, binom.pmf(x,n,p),"bo", ms=8, label ="Funcionn de densidad de B(7,0.4)")
+
+# Se pintan rayitas verticales color azul hasta la altura dada de los puntos en el plot
+ax.vlines(x, 0, binom.pmf(x,n,p), colors = 'b', lw = 4, alpha = 0.5)
+
+#pintmaos una linea vertical, utilizando la funcion binomial teorica
+rv = binom(n,p)
+
+#añadimos lineas verticales punteadas   
+#ax.vlines(x <valores >,0 <inicio >, rv.pmf(x) <hasta Randon values>, colors <k negro >, linestyles <estilo linea>)
+ax.vlines(x,0, rv.pmf(x), colors = 'k', linestyles='--', lw = 1, label = "Distribución teórica")
+
+#Agregamos la leyenda sobre el grafico
+ax.legend(loc = 'best', frameon = False)
+plt.show()
+
+
+#FUNCION DE DISTRIBUCION  ACUMULADA
+fig2, ax2= plt.subplots(1,1)  #figuara para pintar el grafico
+ax2.plot(x, binom.cdf(x,n,p),"bo", ms=8, label ="Funcionn de densidad de B(7,0.4)")  #Acumulada
+ax2.vlines(x, 0, binom.cdf(x,n,p), colors = 'b', lw = 4, alpha = 0.5)
+plt.show()
+
+#Ejemplo con valores alaeatrios
+fix, ax = plt.subplots(1,1)
+
+#Muestra aleaatoria de n=<veces en repetir la berbuli>, p=<probabilidad> , size=<valores aloeatorios>
+fix, ax = plt.subplots(1,1)
+r = binom.rvs(n, p, size = 10000)
+ax.hist(r, bins = n) #REcordar que utiliza el algoritmo para calcular los rangos de distribucion 
+plt.show()
+```
+
+

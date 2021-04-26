@@ -1,0 +1,119 @@
+---
+title: "Notas_Tema_12_Diamantes"
+author: "antonio"
+date: "11/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#Llama a la funcion opts_chunk para que echo = TRUE  muestre el resultado de las chunk
+
+knitr::opts_chunk$set(echo = TRUE ,"cache=True") 
+#NOTA: PARA LIMPIAR A CACHE PARA QUE SE EJECUTE MAS RAPIDO, PODEMOS HACER LO SIGUIENTE 
+#cache=True: Permite crear una serie de carpetas en la ruta (donde se guarda el markdown), se cachean los datos y graficos
+#de este modo genera todos los ficheros se consulten dentro del fichero y no se generen nuevamente en cada ejecucion
+```
+
+#Analisis de los Diamantes
+
+#esto se les conoce como chunk
+```{python}
+
+import numpy as np
+import pandas as pd #librerias graficos gasicos
+import matplotlib  #librerias para graficos
+from ggplot import diamonds
+
+matplotlib.style.use("ggplot")
+
+print(diamonds.shape) #Tamaño del dataset en filas y columnas
+print(diamonds.head(10))
+
+```
+
+## Histograma
+```{python}
+#Nota: Cualquier objeto tipo dataset puede invocar los plots de matplotlib
+diamonds.hist(column="carat", figsize=(8,8), color="blue")
+matplotlib.pyplot.show() 
+diamonds.hist(column="carat", figsize=(8,8), color="blue", bins=50, range=(0,3.5))#Agregamo "50" divisiones y abrimos el rango
+matplotlib.pyplot.show() #Pinta el grafico 
+
+```
+
+
+## Filtro de outliers
+```{python}
+#Filtramos el dataset, nos quedmamos con los Diamantes con Quilate mayo a 3.5
+print(diamonds[diamonds["carat"]>3.5])
+```
+
+
+## Diagrama de caja y bigotes
+
+```{python}
+diamonds.boxplot(column="carat",figsize=(2,4))
+matplotlib.pyplot.show() 
+diamonds.boxplot(column="carat",by="clarity") #Relacion de claridad en funcion del Quilate
+matplotlib.pyplot.show() 
+diamonds.boxplot(column="price",by="clarity") #Relacion del precion en funcion de Quilate
+matplotlib.pyplot.show() 
+```
+
+## Diagrama de Densidad (Como se distribuyen los diamantes)
+
+```{python}
+matplotlib.pyplot.clf() #Permite limpiar el objeto Figura, con lo cual se borra la instancia y genera una nueva
+
+diamonds["carat"].plot(kind="density", figsize=(5,6),xlim=(0,5))
+matplotlib.pyplot.show()
+```
+
+
+## Tabla de Frecuencias y Barplot (Variables categoricas)
+
+```{python}
+matplotlib.pyplot.clf() #Permite limpiar el objeto Figura, con lo cual se borra la instancia y genera una nueva
+#Generamos una tabla cruzada, que nos regresa las frecuencias absolutas o relativas de dos o mas variables 
+carat_table=pd.crosstab(index=diamonds["clarity"], columns=["count"])
+print(carat_table)
+carat_table.plot(kind="bar", figsize=(4,4))
+matplotlib.pyplot.show()
+```
+
+
+##Tabla Bi-Dimensional
+```{python}
+matplotlib.pyplot.clf() #Permite limpiar el objeto Figura, con lo cual se borra la instancia y genera una nueva
+#Generamos una tabla cruzada, que nos regresa las frecuencias absolutas o relativas de dos o mas variables 
+carat_table_color=pd.crosstab(index=diamonds["clarity"], columns=diamonds["color"])
+print(carat_table_color) 
+
+matplotlib.pyplot.clf()
+carat_table_color.plot(kind="bar", figsize=(4,4),stacked=True) #staked=True Permite apilar las barras
+matplotlib.pyplot.show()
+
+matplotlib.pyplot.clf()
+carat_table_color.plot(kind="bar", figsize=(4,4),stacked=False) #staked=False Permite pintar las barras una a lado de otra
+matplotlib.pyplot.show()
+
+#Comentario: De esta forma podemos visualizar como se distribuye la clariadad por el color de los diamantes
+```
+
+
+##Scatter Plot (nube de puntos)
+```{python}
+#Pinta puntos en eje x, y 
+matplotlib.pyplot.clf()
+diamonds.plot(kind="scatter", figsize=(8,8), x="carat", y= "price", ylim=(0,20000),xlim=(0,6), alpha=0.2) #staked=True Permite apilar las barras
+matplotlib.pyplot.show()
+
+
+#Comentario: De acuerdo al grafico nos podemos dar cuenta que entre mas se iluminado es el punto a lo largo del grafico
+#es donde mas se aglutinan los diamantes, lo que significa que enetre mas claros menos diamantes hay en relacion
+#al costo y Quilate, ademas de que lo diamantes outlier suelen ser los mas caros 
+```
+
+
+
+

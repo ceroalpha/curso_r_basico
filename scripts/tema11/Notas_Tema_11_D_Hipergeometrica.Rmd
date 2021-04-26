@@ -1,0 +1,83 @@
+---
+title: "
+
+
+"
+author: "antonio"
+date: "31/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Distribucion Hipergeometrica
+
+
+## Distribución Hipergeométrica
+
+Supongamos que tenemos 20 animales, de los cuales 7 son perros. Queremos medir la probabilidad de encontrar un número determinado de perros si elegimos $k=12$ animales al azar. 
+
+# En `R`
+
+```{r}
+library(Rlab)  #Importamos la libreria
+M = 7 #numero de exitos de la poblacion
+N = 13 #Numero de no exitos de la poblacion
+k = 12 #Numero de la muestra
+
+dhyper(x = 0:12, m = M, n = N, k = k) #Distribucion hipergeometrica(Densidad)
+phyper(q = 0:12, m = M, n = N, k = k) #funcion de distribucion acumulada
+qhyper(p = 0.5, m = M, n = N, k = k)  #Calculamos el Q2
+rhyper(nn = 1000, m = M, n = N, k = k) -> data
+hist(data, breaks = 8)  #Graficamos la distribucion d elos datros con el Histograma
+```
+
+
+## Ejemplo de Celular:
+```{r}
+#En una caja hay 10 celulares, de los cuales hay 3 dañados; si se sacan 5 celulares de la caja
+#¿Cual es la probabilidad de sacar un celular dañado?
+
+M=7 #Exitos
+N=3 #DEfectuoso
+K=5 
+dhyper(x=0:5,m=M,n=N,k=K)
+phyper(q=0:5,m=M,n=N,k=K)
+
+#hits(phyper(q=0:5,m=M,n=N,k=K))
+plot(0:K,dhyper(x=0:5,m=M,n=N,k=K),ylim=c(0,1),col=c("green"))
+
+plot(0:K,phyper(q=0:5,m=M,n=N,k=K),ylim=c(0,1),col=c("green"))
+```
+
+
+
+## En `Python`
+```{python}
+from scipy.stats import hypergeom
+import matplotlib.pyplot as plt
+import numpy as np
+
+[M, n, N] = [20, 7, 6] #Donde  [<Numero total de poblacion>,<EXitos de poblacion>,<Total de la muestra >]
+rv = hypergeom(M, n, N)
+x = np.arange(0, n+1)
+y = rv.pmf(x)
+
+#Observamos los patametros media,varianza,sesgo,curtosis, con ayuda de la funcion "stats"
+mean, var, skew, kurt = rv.stats(moments = 'mvsk')
+print("Media %f"%mean)
+print("Varianza %f"%var)
+print("Sesgo %f"%skew)
+print("Curtosis %f"%kurt)
+
+fig = plt.figure()   #Pintamos la figura en este caso el grafico 
+ax = fig.add_subplot(111) #tamaño del subplot
+ax.plot(x, y, 'bo' ) 
+ax.vlines(x,0,y, lw = 2, alpha = 0.5)
+ax.set_xlabel("Número de perros entre los 12 elegidos al azar") #Etiqueta Eje X
+ax.set_ylabel("Distribución de probabilidad de H(13,7,12)") #Etiqueta Eje Y
+plt.show()
+```
+
